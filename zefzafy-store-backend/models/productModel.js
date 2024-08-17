@@ -64,9 +64,24 @@ const ProductSchema = new mongoose.Schema(
       required: true,
       default: 0,
     },
+    sales : {
+      type : Number,
+      default : 0,
+    }, 
   },
   { timestamps: true }
 );
+
+
+ProductSchema.pre(/^find/ , function(next) {
+  this.populate({
+    path : "category" ,
+    select : "name"
+  })
+  next();
+  })
+  
+  
 
 const ProductModel = mongoose.model("Product", ProductSchema);
 

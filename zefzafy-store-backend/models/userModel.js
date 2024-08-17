@@ -28,6 +28,12 @@ const UserSchema = new mongoose.Schema({
     required : true,
     default : false
     },
+    wishList : [
+    {  type : mongoose.Schema.Types.ObjectId,
+      ref : "Product"
+    }
+    
+    ]
 
 },{timestamps : true})
 
@@ -39,6 +45,16 @@ UserSchema.pre("save" , async function (next) {
   next();
 })
 
+
+UserSchema.pre(/^find/ , function(next) {
+  this.populate({
+    path : "wishList" ,
+    select : "name images category"
+  })
+  next();
+  })
+  
+  
 
 const UserModel = mongoose.model("User" , UserSchema);
 

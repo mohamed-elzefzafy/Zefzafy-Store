@@ -49,6 +49,8 @@ export const createProduct = asyncHandler(async (req, res, next) => {
 
     product.images = imagesResult;
     await product.save();
+  } else {
+    return next(customErrorClass.create(`one image at least is required`, 400));
   }
 
   res.status(201).json(product);

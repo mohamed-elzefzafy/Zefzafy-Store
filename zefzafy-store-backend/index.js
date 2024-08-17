@@ -2,7 +2,6 @@ import express from "express";
 import path from "path";
 import dotenv from "dotenv";
 import connectDb from "./config/connectDb.js";
-// dotenv.config({path: process.env.DOTENV_CONFIG_PATH  || path.resolve(__dirname, "./config.env") });
 dotenv.config({path : "./config.env"});
 import {notFound , errorHandler} from "./middlewares/errorMiddleware.js";
 import mountRoutes from "./routes/mountRoutes.js";
