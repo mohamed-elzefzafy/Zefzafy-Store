@@ -1,6 +1,6 @@
 import { createContext, useState, useMemo } from "react";
 import { createTheme, Theme, PaletteOptions } from "@mui/material/styles";
-import { grey } from "@mui/material/colors";
+import { deepPurple, grey } from "@mui/material/colors";
 
 // Define a type for the color mode (either "light" or "dark")
 type Mode = "light" | "dark";
@@ -20,6 +20,12 @@ declare module '@mui/material/styles' {
     bg: {
       main: string;
     };
+    appbarColor?: {
+      main: string;
+    };
+    mainColor?: {
+      main: string;
+    };
   }
 
   interface PaletteOptions {
@@ -35,6 +41,12 @@ declare module '@mui/material/styles' {
     bg?: {
       main: string;
     };
+    appbarColor?: {
+      main: string;
+    };
+    mainColor?: {
+      main: string;
+    };
   }
 }
 
@@ -47,7 +59,9 @@ export const getDesignTokens = (mode: Mode): PaletteOptions => ({
         neutral: { main: "#64748B" },
         favColor: { main: grey[300] },
         myColor: { main: "#F6F9FC" },
-        bg: { main: "#F6F6F6" }, // Ensure this is defined
+        bg: { main: "#F6F6F6" }, 
+        appbarColor: { main: deepPurple[800] }, 
+        mainColor: { main: deepPurple[800] }, 
       }
     : {
         text: { primary: "#fff" },
@@ -55,6 +69,8 @@ export const getDesignTokens = (mode: Mode): PaletteOptions => ({
         favColor: { main: grey[800] },
         myColor: { main: "#252b32" },
         bg: { main: "#1D2021" },
+        appbarColor: { main: "#121212" }, 
+        mainColor: { main: deepPurple[400] }, 
       }),
 });
 

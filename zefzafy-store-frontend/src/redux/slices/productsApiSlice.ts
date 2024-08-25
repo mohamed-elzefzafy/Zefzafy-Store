@@ -1,22 +1,34 @@
 import { EndpointBuilder } from "@reduxjs/toolkit/query";
 import { apiSlice } from "./apiSlice";
-import { pagination, Product } from "../../types";
+import { IGetProduct, IProduct } from "../../types";
 
-interface IGetProduct {
-  products : Product[];
-  pagination : pagination
-}
 
 export const productsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder: EndpointBuilder<any, any, any>) => ({
-    getProducts: builder.query<IGetProduct, void>({
-      query: () => ({
-        url: `/api/v1/products/get-products`,
+    getProducts: builder.query<IGetProduct, string | void>({
+      query: (queries) => ({
+        url: `/api/v1/products/get-products${queries}`,
       }),
       keepUnusedDataFor: 5,
-      providesTags: ["Products"],
+      providesTags: ["Product"],
     }),
+
+    getOneProduct: builder.query<IProduct, string | void>({
+      query: (productId) => ({
+        url: `/api/v1/products/get-one-product/${productId}`,
+      }),
+      keepUnusedDataFor: 5,
+      providesTags: ["Product"],
+    }),
+    getProductsCategory: builder.query<IProduct[], string | void>({
+      query: (categoryId) => ({
+        url: `/api/v1/products/category-products/${categoryId}`,
+      }),
+      keepUnusedDataFor: 5,
+      providesTags: ["Product"],
+    }),
+
   }),
 });
 
-export const { useGetProductsQuery } = productsApiSlice;
+export const { useGetProductsQuery , useGetOneProductQuery , useGetProductsCategoryQuery} = productsApiSlice;

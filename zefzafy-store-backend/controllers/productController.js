@@ -64,7 +64,7 @@ export const createProduct = asyncHandler(async (req, res, next) => {
    ----------------------------------------*/
 export const getAllProducts = asyncHandler(async (req, res, next) => {
 const {productQuery , sortOptions} = sortAndSearchOptions(req);
-const {pagination , pageSize , skip} = await paginationFunction(4 , req , ProductModel , productQuery);
+const {pagination , pageSize , skip} = await paginationFunction(6 , req , ProductModel , productQuery);
   const products = await ProductModel.find(productQuery).sort(sortOptions)
   .populate("category").limit(pageSize).skip(skip);
 
@@ -176,6 +176,21 @@ res.status(201).json({message : "success" ,  product});
 
 
 
+         /**---------------------------------------
+ * @desc    get Top Category Products
+ * @route   /api/v1/products/category-products/:categoryId
+ * @method  GET
+ * @access  public 
+ ----------------------------------------*/
+ export const getTopCategoryProducts = asyncHandler(async (req , res , next) => {
+  const category = await CategoryModel.findById(req.params.categoryId);
+  if (!category) {
+    return next(customErrorClass.create(`there's no category with id (${req.params.categoryId})` , 400))
+  }
+const products = await ProductModel.find({category : req.params.categoryId}).sort({rating : -1 , sales : -1}).limit(5);
+
+res.status(200).json(products);
+ })
 
 
 
@@ -192,23 +207,19 @@ const sortAndSearchOptions = (req) => {
   let queryCondition = false;
   let productQuery = {};
 
-  let nameSearchQuery = {};
+  let keywordSearchQuery = {};
+  let ratingSearchQuery = {};
   let categorySearchQuery = {};
-  let descriptionSearchQuery = {};
 
-  //search by name
-  if (req.query.name) {
-    queryCondition = true;
-    nameSearchQuery = {
-      name: { $regex: req.query.name, $options: "i" },
-    };
-  }
 
-  //search by description
-  if (req.query.description) {
+  //search by name and description
+  if (req.query.keyword) {
     queryCondition = true;
-    descriptionSearchQuery = {
-      description: { $regex: req.query.description, $options: "i" },
+    keywordSearchQuery = {
+    $or : [
+      {name: { $regex: req.query.keyword, $options: "i" }},
+      {description: { $regex: req.query.keyword, $options: "i" }},
+    ]
     };
   }
 
@@ -220,10 +231,19 @@ const sortAndSearchOptions = (req) => {
     };
   }
 
+    //filter by rating
+    if (req.query.rating) {
+      queryCondition = true;
+      ratingSearchQuery = {
+        rating: {$gte :req.query.rating},
+      };
+    }
+  
+
 
   if (queryCondition) {
     productQuery = {
-      $and: [categorySearchQuery, nameSearchQuery, descriptionSearchQuery],
+      $and: [categorySearchQuery, keywordSearchQuery  , ratingSearchQuery],
     };
   }
 

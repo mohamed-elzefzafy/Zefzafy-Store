@@ -1,25 +1,28 @@
-// import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import { IUserInfo } from "../../types";
 
+interface IUserInfoObject {
+  userInfo : IUserInfo
+}
+const initialState : IUserInfoObject ={
+  userInfo : {
+    _id: "",
+    name: "",
+    email: "",
+    profilePhoto: {url : "" , public_id : ""},
+    isAdmin: false,
+    wishList: []
+  },
+};
+const authSlice = createSlice({
+  name: 'auth',
+  initialState,
+  reducers : {
+    setCredentials : (state , action) => {
+      state.userInfo = action.payload;
+    }
+  }
+})
 
-// const initialState = {
-//   userInfo :  localStorage.getItem("userInfo") ? JSON.parse(localStorage.getItem("userInfo")) : null}
-
-// const authSlice = createSlice({
-//   name: "auth",
-//   initialState,
-//   reducers : {
-//     setCredentials : (state , action) => {
-//       state.userInfo = action.payload;
-//       localStorage.setItem("userInfo" , JSON.stringify(action.payload));
-//     } ,
-//     loggingout : (state , action) => {
-//       state.userInfo = null;
-//       localStorage.clear();
-//     }
-//   }
-// })
-
-
-
-// export const  {setCredentials , loggingout} = authSlice.actions;
-// export default authSlice.reducer;
+export const {setCredentials} = authSlice.actions;
+export default authSlice.reducer;

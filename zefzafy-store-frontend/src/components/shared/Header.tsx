@@ -14,8 +14,13 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import ToggleDarkLightIcons from '../../muiTheme/ToggleDarkLightIcons';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { createSearchKeywordAction } from '../../redux/slices/searchSlice';
+import { Avatar, useTheme } from '@mui/material';
+import { deepPurple, yellow } from '@mui/material/colors';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -57,52 +62,61 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+
+
+
+
 const Header =  () => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const theme = useTheme();
+  const [mode, setMode] =  useState(localStorage.getItem("mode") || "light");
+  const {userInfo} =useAppSelector(state => state.auth)
+  // const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
      useState<null | HTMLElement>(null);
 
-  const isMenuOpen = Boolean(anchorEl);
+  // const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-  const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+  // const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+  //   setAnchorEl(event.currentTarget);
+  // };
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
   };
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    handleMobileMenuClose();
-  };
+  // const handleMenuClose = () => {
+  //   setAnchorEl(null);
+  //   handleMobileMenuClose();
+  // };
 
-  const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setMobileMoreAnchorEl(event.currentTarget);
-  };
+  // const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+  //   setMobileMoreAnchorEl(event.currentTarget);
+  // };
 
   const menuId = 'primary-search-account-menu';
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-    </Menu>
-  );
+  // const renderMenu = (
+  //   <Menu
+  //     anchorEl={anchorEl}
+  //     anchorOrigin={{
+  //       vertical: 'top',
+  //       horizontal: 'right',
+  //     }}
+  //     id={menuId}
+  //     keepMounted
+  //     transformOrigin={{
+  //       vertical: 'top',
+  //       horizontal: 'right',
+  //     }}
+  //     open={isMenuOpen}
+  //     onClose={handleMenuClose}
+  //   >
+  //     <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+  //     <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+  //   </Menu>
+  // );
 
   const mobileMenuId = 'primary-search-account-menu-mobile';
   const renderMobileMenu = (
@@ -141,7 +155,7 @@ const Header =  () => {
         </IconButton>
         <p>Notifications</p>
       </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
+      {/* <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
           size="large"
           aria-label="account of current user"
@@ -152,13 +166,19 @@ const Header =  () => {
           <AccountCircle />
         </IconButton>
         <p>Profile</p>
-      </MenuItem>
+      </MenuItem> */}
     </Menu>
   );
 
+
+
+  const createSaerchKeywordHandler = (value : string) => {
+   dispatch(createSearchKeywordAction(value));
+   navigate("/products");
+  }
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="static" sx={{bgcolor : theme.palette.appbarColor?.main }}>
         <Toolbar>
           <IconButton
             size="large"
@@ -167,7 +187,7 @@ const Header =  () => {
             aria-label="open drawer"
             sx={{ mr: 2 }}
           >
-            <MenuIcon />
+            {/* <MenuIcon /> */}
           </IconButton>
           <Typography
             variant="h6"
@@ -175,7 +195,7 @@ const Header =  () => {
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' } }}
           >
-            MUI
+            <Link to="/"> Zefzafy-Store </Link>
           </Typography>
           <Search>
             <SearchIconWrapper>
@@ -184,13 +204,43 @@ const Header =  () => {
             <StyledInputBase
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
+              onChange={(e : ChangeEvent<HTMLInputElement>) => createSaerchKeywordHandler(e.target.value) }
             />
           </Search>
           <Box sx={{ flexGrow: 1 }} />
+      
           <IconButton size="large" aria-label="show 4 new mails" color="inherit">
               <ToggleDarkLightIcons fontSize='20px'/>
             </IconButton>
-          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+
+
+             
+        {userInfo?.email &&    
+        <>
+                
+            {userInfo.isAdmin ?
+         (  <Typography component={Link} color={"red"} to="/admin">Admin-Dashboard</Typography>)
+          :
+          (  <Typography component={Link} fontSize="15px" to="/user">User-Dashboard</Typography>)
+          }
+        <Typography  variant="body1" sx={{mx:1}}> {" "} {userInfo?.name}</Typography>
+              <Avatar alt="Remy Sharp" src={userInfo?.profilePhoto?.url} />
+    
+        </>
+
+        }
+
+
+{
+  !userInfo.email &&
+<>
+<Typography component={Link} color={"red"} sx={{mr : 1}} to="/login">Login</Typography>
+  
+  <Typography component={Link} fontSize="15px" to="/register">Register</Typography>
+</>
+}
+
+          {/* <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
         
             <IconButton
               size="large"
@@ -207,28 +257,28 @@ const Header =  () => {
               aria-label="account of current user"
               aria-controls={menuId}
               aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
+              // onClick={handleProfileMenuOpen}
               color="inherit"
             >
               <AccountCircle />
             </IconButton>
-          </Box>
-          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+          </Box> */}
+          {/* <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
               aria-label="show more"
               aria-controls={mobileMenuId}
               aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
+              // onClick={handleMobileMenuOpen}
               color="inherit"
             >
               <MoreIcon />
             </IconButton>
-          </Box>
+          </Box> */}
         </Toolbar>
       </AppBar>
-      {renderMobileMenu}
-      {renderMenu}
+      {/* {renderMobileMenu}
+      {renderMenu} */}
     </Box>
   );
 }
