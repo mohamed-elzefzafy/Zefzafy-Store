@@ -15,7 +15,7 @@ import { generateToken } from "./../utils/generateToken.js";
    * @access  public 
    ----------------------------------------*/
 export const register = asyncHandler(async (req, res, next) => {
-  const { name, email, password } = req.body;
+  const { firstName, lastName ,email, password } = req.body;
   const userExists = await UserModel.findOne({ email: email });
   if (userExists) {
     return next(
@@ -24,7 +24,8 @@ export const register = asyncHandler(async (req, res, next) => {
   }
 
   const user = await UserModel.create({
-    name,
+    firstName,
+    lastName,
     email,
     password,
   });
@@ -51,13 +52,6 @@ export const register = asyncHandler(async (req, res, next) => {
 
   generateToken(res, user._id);
 
-  // res.status(201).json({
-  //   _id : user._id,
-  //   name : user.name,
-  //   email : user.email,
-  //   isAdmin : user.isAdmin,
-  //   profilePhoto : user.profilePhoto
-  // });
 
   res.status(201).json(user);
 });
@@ -85,7 +79,8 @@ export const login = asyncHandler(async (req, res, next) => {
     .status(201)
     .json({
       _id: user._id,
-      name: user.name,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
       profilePhoto: user.profilePhoto,
       isAdmin : user.isAdmin,
@@ -130,13 +125,14 @@ export const getUserProfile = asyncHandler(async (req, res) => {
  * @access  private 
  ----------------------------------------*/
 export const updateUserProfile = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
+  const { firstName ,lastName , email, password } = req.body;
   const user = await UserModel.findById(req.user._id);
   if (!user) {
     return next(customErrorClass.create(`user not found`, 404));
   }
 
-  user.name = name || user.name;
+  user.firstName = firstName || user.firstName;
+  user.lastName = lastName || user.lastName;
   user.email = email || user.email;
   user.password = password || user.password;
 

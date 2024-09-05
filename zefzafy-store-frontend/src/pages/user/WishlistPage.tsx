@@ -2,8 +2,12 @@
 
 const WishlistPage = () => {
   return (
-    <div>WishlistPage</div>
-  )
-}
+    <div>
+      WishlistPage
 
-export default WishlistPage
+
+    </div>
+  );
+};
+
+export default WishlistPage;

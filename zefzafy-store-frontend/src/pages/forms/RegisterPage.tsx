@@ -27,7 +27,8 @@ const RegisterPage = () => {
     console.log(data);
 
     const formData = new FormData();
-    formData.append("name", data.name);
+    formData.append("firstName", data.firstName);
+    formData.append("lastName", data.lastName);
     formData.append("email", data.email);
     formData.append("password", data.password);
     if (profilePhoto) {
@@ -78,14 +79,23 @@ const RegisterPage = () => {
     >
       <Typography variant="h4">Register</Typography>
       <TextField
-        label="Name"
-        {...register("name", { required: "name is required" })}
-        error={errors.name ? true : false}
-        helperText={errors.name && "name is required"}
+        label="firstName"
+        {...register("firstName", { required: "first name is required" })}
+        error={errors.firstName ? true : false}
+        helperText={errors.firstName && "first name is required"}
         fullWidth
         margin="normal"
       />{" "}
-      {/* {errors.name && <p>{errors.name.message}</p>} */}
+  
+      <TextField
+        label="lastName"
+        {...register("lastName", { required: "last name is required" })}
+        error={errors.lastName ? true : false}
+        helperText={errors.lastName && "last name is required"}
+        fullWidth
+        margin="normal"
+      />{" "}
+  
       <TextField
         label="Email"
         {...register("email", {

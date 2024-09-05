@@ -52,7 +52,8 @@ export interface ICategory {
 }
 
 export interface IUserRegister {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   profilePhoto?: File;
@@ -64,9 +65,40 @@ export interface IUserLogin {
 
 export interface IUserInfo {
   _id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   profilePhoto: CloudinaryObject;
   isAdmin: boolean;
   wishList: [];
 }
+
+export interface ICart {
+  
+    user: string;
+    orderTotal: {
+      carItemsLength: number;
+      cartSubtotal: number;
+    },
+    cartItems: TCartItems[];
+    _id: string,
+    createdAt: string,
+    updatedAt: string,
+    __v: number
+  }
+
+  export type TCartItems =  {
+    name: string,
+    productId: string,
+    price: number,
+    images: [
+      {
+        url: string,
+        public_id:string
+      },
+    ]
+    quantity: number,
+    count: number,
+    _id: string,
+    removeItemFromCartHandler?: (productId : string) => void
+  }

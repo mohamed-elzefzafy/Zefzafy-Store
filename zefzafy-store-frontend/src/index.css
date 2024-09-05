@@ -15,4 +15,5 @@ a {
 
 .red {
   border: 2px solid red !important;
+  height: fit-content;
 }

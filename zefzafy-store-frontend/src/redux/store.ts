@@ -6,19 +6,21 @@ import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
 import { combineReducers } from "redux";
 import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
+import cart from "./slices/cartSlice";
 
 // Persist config
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['auth'], // Add the slices you want to persist
+  whitelist: ['auth' , "cart"], // Add the slices you want to persist
 };
 
 // Combine reducers
 const rootReducer = combineReducers({
   [apiSlice.reducerPath]: apiSlice.reducer,
   search,
-  auth, // Assuming `auth` is the reducer that contains user data
+  auth,
+  cart, 
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

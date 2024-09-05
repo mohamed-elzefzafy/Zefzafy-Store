@@ -7,7 +7,8 @@ interface IUserInfoObject {
 const initialState : IUserInfoObject ={
   userInfo : {
     _id: "",
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     profilePhoto: {url : "" , public_id : ""},
     isAdmin: false,
@@ -20,9 +21,18 @@ const authSlice = createSlice({
   reducers : {
     setCredentials : (state , action) => {
       state.userInfo = action.payload;
-    }
+    },
+    logoutAction : (state ) => {
+      state.userInfo = {    _id: "",
+        firstName: "",
+        lastName: "",
+        email: "",
+        profilePhoto: {url : "" , public_id : ""},
+        isAdmin: false,
+        wishList: []};
+    },
   }
 })
 
-export const {setCredentials} = authSlice.actions;
+export const {setCredentials , logoutAction} = authSlice.actions;
 export default authSlice.reducer;

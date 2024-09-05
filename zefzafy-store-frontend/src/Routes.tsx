@@ -6,6 +6,8 @@ import CategoriesPage from "./pages/CategoriesPage";
 import RegisterPage from "./pages/forms/RegisterPage";
 import LoginPage from "./pages/forms/LoginPage";
 import ProductDetailsPage from "./pages/ProductDetailsPage";
+import CartPage from "./pages/CartPage";
+import OrdersPage from "./pages/OrdersPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -14,6 +16,8 @@ const router = createBrowserRouter(
   <Route path='/products' element={<ProductsPage/>}/>
   <Route path='/products/:ProductID' element={<ProductDetailsPage/>}/>
   <Route path='/categories' element={<CategoriesPage/>}/>
+  <Route path='/user/cart' element={<CartPage/>}/>
+  <Route path='/user/orders' element={<OrdersPage/>}/>
   <Route path='/register' element={<RegisterPage/>}/>
   <Route path='/login' element={<LoginPage/>}/>
  {/* <Route path='/page/:pageNumber' element={<HomeScreen/>}/>

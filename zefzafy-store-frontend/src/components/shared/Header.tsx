@@ -5,22 +5,24 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
-import Badge from '@mui/material/Badge';
+import Badge, { BadgeProps } from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
-import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import MoreIcon from '@mui/icons-material/MoreVert';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import ToggleDarkLightIcons from '../../muiTheme/ToggleDarkLightIcons';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { createSearchKeywordAction } from '../../redux/slices/searchSlice';
-import { Avatar, useTheme } from '@mui/material';
-import { deepPurple, yellow } from '@mui/material/colors';
+import { Avatar, Button, useTheme } from '@mui/material';
+import { ShoppingCart } from '@mui/icons-material';
+import { useLogoutMutation } from '../../redux/slices/usersApiSlice';
+import toast from 'react-hot-toast';
+import { logoutAction } from '../../redux/slices/authSlice';
+import { setCartItemLength } from '../../redux/slices/cartSlice';
+import { useGetUserCartQuery } from '../../redux/slices/cartApiSlice';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -33,13 +35,13 @@ const Search = styled('div')(({ theme }) => ({
   marginLeft: 0,
   width: '100%',
   [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(3),
+    marginLeft: {xs : theme.spacing(3)},
     width: 'auto',
   },
 }));
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
+  padding: theme.spacing(0, 1),
   height: '100%',
   position: 'absolute',
   pointerEvents: 'none',
@@ -53,7 +55,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   '& .MuiInputBase-input': {
     padding: theme.spacing(1, 1, 1, 0),
     // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    paddingLeft: `calc(1em + ${theme.spacing(2)})`,
     transition: theme.transitions.create('width'),
     width: '100%',
     [theme.breakpoints.up('md')]: {
@@ -66,57 +68,33 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 
 
+
 const Header =  () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
   const [mode, setMode] =  useState(localStorage.getItem("mode") || "light");
-  const {userInfo} =useAppSelector(state => state.auth)
-  // const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const {userInfo} =useAppSelector(state => state.auth);
+  const { data: userCartItems } = useGetUserCartQuery();
+  const {cartItemLength} = useAppSelector(state => state.cart)
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
      useState<null | HTMLElement>(null);
 
-  // const isMenuOpen = Boolean(anchorEl);
+     useEffect(()=>{   
+      dispatch(setCartItemLength(userCartItems?.cartItems?.length))
+       },[userCartItems])
+
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-  // const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-  //   setAnchorEl(event.currentTarget);
-  // };
+const [logout] = useLogoutMutation();
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
   };
 
-  // const handleMenuClose = () => {
-  //   setAnchorEl(null);
-  //   handleMobileMenuClose();
-  // };
 
-  // const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-  //   setMobileMoreAnchorEl(event.currentTarget);
-  // };
 
   const menuId = 'primary-search-account-menu';
-  // const renderMenu = (
-  //   <Menu
-  //     anchorEl={anchorEl}
-  //     anchorOrigin={{
-  //       vertical: 'top',
-  //       horizontal: 'right',
-  //     }}
-  //     id={menuId}
-  //     keepMounted
-  //     transformOrigin={{
-  //       vertical: 'top',
-  //       horizontal: 'right',
-  //     }}
-  //     open={isMenuOpen}
-  //     onClose={handleMenuClose}
-  //   >
-  //     <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-  //     <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-  //   </Menu>
-  // );
 
   const mobileMenuId = 'primary-search-account-menu-mobile';
   const renderMobileMenu = (
@@ -155,49 +133,58 @@ const Header =  () => {
         </IconButton>
         <p>Notifications</p>
       </MenuItem>
-      {/* <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
-      </MenuItem> */}
     </Menu>
   );
-
-
+;
+  const StyledBadge = styled(Badge)<BadgeProps>(() => ({
+    '& .MuiBadge-badge': {
+      top: "4px",
+      left: "3px",
+      padding: '0',
+    },
+  }));
 
   const createSaerchKeywordHandler = (value : string) => {
    dispatch(createSearchKeywordAction(value));
    navigate("/products");
   }
+
+
+  const [anchorEl, setAnchorEl] =  useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+
+  const logoutHandler = async() => {
+    try {
+      await logout({}).unwrap();
+      dispatch(logoutAction())
+      navigate("/login")
+    } catch (error) {
+      const errorMessage = (error as { data?: { message?: string } }).data?.message;
+      toast.error(errorMessage as string);
+    }
+  }
+
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{bgcolor : theme.palette.appbarColor?.main }}>
         <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            sx={{ mr: 2 }}
-          >
-            {/* <MenuIcon /> */}
-          </IconButton>
           <Typography
             variant="h6"
             noWrap
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' } }}
           >
-            <Link to="/"> Zefzafy-Store </Link>
+            <Link to="/" style={{marginRight : 5}}> Zefzafy-Store </Link>
           </Typography>
-          <Search>
+          <Search sx={{display : "flex" , justifyContent : "flex-start"}}>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
@@ -208,77 +195,76 @@ const Header =  () => {
             />
           </Search>
           <Box sx={{ flexGrow: 1 }} />
-      
-          <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+
+          <IconButton size="small" sx={{".MuiButtonBase-root" : {p:1 , width : "5px" , height : "5px"}}} >
               <ToggleDarkLightIcons fontSize='20px'/>
             </IconButton>
 
+              {userInfo.email && !userInfo.isAdmin   &&
+              <IconButton  aria-label="cart" sx={{mr : {xs : 2 , md : 1}}}
+               onClick={()=> navigate("/user/cart")} >
+              <StyledBadge badgeContent={cartItemLength?? 0} color="secondary">
+                <ShoppingCart sx={{color : "white" , fontSize : "18px" }}/>
+              </StyledBadge>
+            </IconButton>
+              
+              }
+      
+      
 
-             
-        {userInfo?.email &&    
+            {userInfo?.email ? (
         <>
-                
-            {userInfo.isAdmin ?
-         (  <Typography component={Link} color={"red"} to="/admin">Admin-Dashboard</Typography>)
-          :
-          (  <Typography component={Link} fontSize="15px" to="/user">User-Dashboard</Typography>)
-          }
-        <Typography  variant="body1" sx={{mx:1}}> {" "} {userInfo?.name}</Typography>
-              <Avatar alt="Remy Sharp" src={userInfo?.profilePhoto?.url} />
-    
+          <Button onClick={handleClick} sx={{ color: "white" , textTransform : "capitalize"}} >
+            {userInfo?.firstName}
+          </Button>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+          >
+            {userInfo.isAdmin ? (
+              <MenuItem
+                onClick={() => {
+                  handleClose();
+                  navigate("/admin");
+                }}
+              >
+                Admin-Dashboard
+              </MenuItem>
+            ) : (
+              <MenuItem
+                onClick={() => {
+                  handleClose();
+                  navigate("/user");
+                }}
+              >
+                User-Dashboard
+              </MenuItem>
+            )}
+            <MenuItem onClick={logoutHandler}>Logout</MenuItem>
+          </Menu>
+          <Avatar alt={userInfo?.firstName} src={userInfo?.profilePhoto?.url} sx={{ml :1}}/>
         </>
+      ) : (
+        <>
+          <Typography component={Link} color={"red"} sx={{ mr: 1 }} to="/login">
+            Login
+          </Typography>
 
-        }
+          <Typography component={Link} fontSize="15px" to="/register">
+            Register
+          </Typography>
+        </>
+      )}
+    
 
 
-{
-  !userInfo.email &&
-<>
-<Typography component={Link} color={"red"} sx={{mr : 1}} to="/login">Login</Typography>
-  
-  <Typography component={Link} fontSize="15px" to="/register">Register</Typography>
-</>
-}
-
-          {/* <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-        
-            <IconButton
-              size="large"
-              aria-label="show 17 new notifications"
-              color="inherit"
-            >
-              <Badge badgeContent={17} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              // onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-          </Box> */}
-          {/* <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-            <IconButton
-              size="large"
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              // onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </Box> */}
         </Toolbar>
       </AppBar>
-      {/* {renderMobileMenu}
-      {renderMenu} */}
     </Box>
   );
 }

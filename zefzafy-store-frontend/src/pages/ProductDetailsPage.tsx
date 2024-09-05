@@ -19,16 +19,19 @@ import {
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { useGetOneProductQuery, useGetProductsCategoryQuery } from "../redux/slices/productsApiSlice";
-import { SetStateAction, useState } from "react";
+import { ChangeEvent, SetStateAction, useState } from "react";
 import { BorderColor, Delete, DeleteForever } from "@mui/icons-material";
 import { useCreateReviewMutation, useDeleteReviewByAdminMutation, useDeleteReviewMutation, useUpdateReviewMutation } from "../redux/slices/reviewsApiSlice";
 import toast from "react-hot-toast";
-import { useAppSelector } from "../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { IReviewsResult } from "../types";
 import ProductCard from "../components/products/ProductCard";
+import { setCartItemLength } from "../redux/slices/cartSlice";
+import { useAddToCartMutation } from "../redux/slices/cartApiSlice";
 
 const ProductDetailsPage = () => {
   const { ProductID } = useParams();
+  const dispatch = useAppDispatch();
   const theme = useTheme();
   const {userInfo} = useAppSelector(state => state.auth)
   const { data: product, isLoading, refetch } = useGetOneProductQuery(ProductID);
@@ -41,7 +44,7 @@ const ProductDetailsPage = () => {
   const [rating, setRating] = useState<number | string>("");
   const [comment, setComment] = useState("");
 
-console.log(procutsCategory);
+
 const procutsCategoryRelated = procutsCategory?.filter(prod => prod._id !== product?._id);
 
 const [reviewId, setReviewId] = useState("");
@@ -139,6 +142,7 @@ const deleteReviewHandler = async(reviewId : string) => {
     }
 }
 
+
 const deleteReviewByAdminHandler = async(reviewId : string) => {
   try {
     await deleteReviewByAdmin({productId : ProductID , reviewId : reviewId}).unwrap();
@@ -148,6 +152,35 @@ const deleteReviewByAdminHandler = async(reviewId : string) => {
     toast.error(errorMessage as string);
   }
 }
+
+
+
+const [addToCart] = useAddToCartMutation();
+const [quantity, setQuantity] = useState(1);
+
+
+// const handleQuantityChange = (e : ChangeEvent<HTMLSelectElement>) => {
+//   setQuantity(Number(e.target.value))
+
+  
+// }
+
+console.log(quantity);
+const addToCartHandler = async() => {
+  if (!ProductID) {
+    return;
+  }
+  try {
+  const res =   await addToCart({productId : ProductID , quantity }).unwrap();
+  console.log(res?.cartItems?.length);
+  dispatch(setCartItemLength(res?.cartItems?.length))
+  
+  } catch (error) {
+    
+  }
+}
+
+
 
 
 
@@ -229,6 +262,11 @@ const deleteReviewByAdminHandler = async(reviewId : string) => {
             </ListItem>
             <Divider />
             <ListItem sx={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap" }}>
+              <Typography variant="body1">Stock </Typography>
+              <Typography variant="body1">{product?.countInStock ? product?.countInStock : "Out of stock"}</Typography>
+            </ListItem>
+            <Divider />
+            <ListItem sx={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap" }}>
               <Typography variant="body1">Rating</Typography>
               <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                 <Typography variant="body1">({product?.rating})</Typography>
@@ -246,6 +284,32 @@ const deleteReviewByAdminHandler = async(reviewId : string) => {
               <Typography variant="body1">{product?.updatedAt.substring(0, 10)}</Typography>
             </ListItem>
             <Divider />
+               <ListItem sx={{display : "flex" , alignItems : "center", gap : 5}}>
+               <Button size="small" variant='contained' disabled={product?.countInStock === 0}
+                sx={{ bgcolor : theme.palette.mainColor?.main , color : "white" , mt : 2}}
+                onClick={addToCartHandler}>
+                Add To Cart - {product?.countInStock === 0 && ("(Out of stock)")}
+                </Button>
+
+      
+{(product?.countInStock && product?.countInStock > 0 ) ?
+          <Select
+          // defaultValue={1}
+          value={quantity}
+          onChange={( e) => setQuantity(Number(e.target.value))}
+          sx={{ width: "70px", height: "30px" , mt : 2}}
+      
+        >
+          {Array.from({ length : Number(product?.countInStock) }, (_, index) => (
+            <MenuItem key={index + 1} value={index + 1}>
+              {index + 1}
+            </MenuItem>
+          ))}
+        </Select> :""
+}
+
+               </ListItem>
+
           </List>
         </Box>
       </Stack>

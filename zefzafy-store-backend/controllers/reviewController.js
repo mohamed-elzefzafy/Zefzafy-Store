@@ -27,7 +27,7 @@ const review = {
   comment,
   rating,
   userId : req.user.id,
-  userName : req.user.name,
+  userName : (req.user.firstName + " " + req.user.lastName),
   userImage : req.user.profilePhoto.url,
   createdAt:  Date.now(),
 }
