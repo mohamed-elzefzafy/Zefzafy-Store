@@ -15,7 +15,7 @@ const CartPage = () => {
   },[])
 
 
-  const removeItemFromCartHandler = async(productId : string) => {
+  const removeItemFromCartHandler = async( productId : string) => {
     try {
       await deleteItemFromCart({productId}).unwrap();
       refetchCartItems();
@@ -41,7 +41,7 @@ const CartPage = () => {
       >
         <Stack gap={2} sx={{ width: { xs: "100%", md: "65%" } }}>
           {userCartItems && userCartItems?.cartItems?.map((product) => (
-            <CartItem key={product._id} removeItemFromCartHandler={() => removeItemFromCartHandler(product.productId)} {...product} />
+            <CartItem key={product.productId} removeItemFromCartHandler={removeItemFromCartHandler} refetchCartItems={refetchCartItems} {...product} />
           ))}
         </Stack>
         <Card

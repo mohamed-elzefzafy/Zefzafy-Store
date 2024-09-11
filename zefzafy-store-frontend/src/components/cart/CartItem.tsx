@@ -1,27 +1,44 @@
-import { Box, Stack, Typography, Select, MenuItem, useTheme, SelectChangeEvent, Button } from "@mui/material";
+import {
+  Box,
+  Stack,
+  Typography,
+  Select,
+  MenuItem,
+  useTheme,
+  SelectChangeEvent,
+  Button,
+} from "@mui/material";
 import { useState } from "react";
 import { TCartItems } from "../../types";
-import { useDeleteItemFromCartMutation } from "../../redux/slices/cartApiSlice";
+import { useAddToCartMutation } from "../../redux/slices/cartApiSlice";
 import toast from "react-hot-toast";
 
-const  CartItem = ({ count, images, name, price, quantity , removeItemFromCartHandler }: TCartItems) => {
-  const [Quantity, setQuantity] = useState(1);
+const CartItem = ({
+  count,
+  images,
+  name,
+  price,
+  quantity,
+  productId,
+  removeItemFromCartHandler,
+  refetchCartItems,
+}: TCartItems) => {
+  const [addToCart] = useAddToCartMutation();
+  const [Quantity, setQuantity] = useState(quantity);
   const theme = useTheme();
 
-  const handleQuantityChange = (event: SelectChangeEvent<number>) => {
-    setQuantity(Number(event.target.value));
+  const handleQuantityChange = async (event: SelectChangeEvent<number>) => {
+    const newQuantity = Number(event.target.value);
+    setQuantity(newQuantity);
+    try {
+      await addToCart({ productId, quantity: newQuantity }).unwrap();
+      refetchCartItems();
+    } catch (error) {
+      const errorMessage = (error as { data?: { message?: string } }).data
+        ?.message;
+      toast.error(errorMessage as string);
+    }
   };
-
-
-
-  
-
-
-
-
-
-
-
 
   return (
     <Stack
@@ -68,7 +85,12 @@ const  CartItem = ({ count, images, name, price, quantity , removeItemFromCartHa
           {name}
         </Typography>
 
-        <Stack direction="row" alignItems="center" justifyContent={{xs : "center" , sm : "flex-start"}} gap={15}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent={{ xs: "center", sm: "flex-start" }}
+          gap={15}
+        >
           <Typography variant="body1" fontWeight="bold">
             Price:
           </Typography>
@@ -77,14 +99,6 @@ const  CartItem = ({ count, images, name, price, quantity , removeItemFromCartHa
           </Typography>
         </Stack>
 
-        <Stack direction="row" alignItems="center" justifyContent={{xs : "center" , sm : "flex-start"}} gap={17}>
-          <Typography variant="body2" color="text.secondary">
-            In Stock:
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {count  ? count : "Out of Stock"}
-          </Typography>
-        </Stack>
 
         <Stack
           flexDirection="row"
@@ -94,9 +108,9 @@ const  CartItem = ({ count, images, name, price, quantity , removeItemFromCartHa
         >
           <Typography variant="body1">Quantity:</Typography>
           <Select
-            value={quantity}
             onChange={handleQuantityChange}
-            sx={{ width: "60px", height: "30px" }}
+            value={Quantity?? quantity}
+            sx={{ width: "70px", height: "30px" }}
           >
             {Array.from({ length: count }, (_, index) => (
               <MenuItem key={index + 1} value={index + 1}>
@@ -104,10 +118,31 @@ const  CartItem = ({ count, images, name, price, quantity , removeItemFromCartHa
               </MenuItem>
             ))}
           </Select>
+
+        </Stack>
+
+
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent={{ xs: "center", sm: "flex-start" }}
+          gap={17}
+        >
+          <Typography variant="body2" color="text.secondary">
+            In Stock:
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {count ? count : "Out of Stock"}
+          </Typography>
         </Stack>
 
         <Box>
-          <Button  size="small" variant="contained" sx={{ textTransform: "capitalize" }} onClick={removeItemFromCartHandler}>
+          <Button
+            onClick={() => removeItemFromCartHandler(productId)}
+            size="small"
+            variant="contained"
+            sx={{ textTransform: "capitalize" }}
+          >
             Remove
           </Button>
         </Box>

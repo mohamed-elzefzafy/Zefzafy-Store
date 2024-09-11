@@ -80,14 +80,14 @@ export interface ICart {
       carItemsLength: number;
       cartSubtotal: number;
     },
-    cartItems: TCartItems[];
+    cartItems: TCartItemsObj[];
     _id: string,
     createdAt: string,
     updatedAt: string,
     __v: number
   }
 
-  export type TCartItems =  {
+  export type TCartItemsObj =  {
     name: string,
     productId: string,
     price: number,
@@ -101,4 +101,20 @@ export interface ICart {
     count: number,
     _id: string,
     removeItemFromCartHandler?: (productId : string) => void
+  }
+  export type TCartItems =  {
+    name: string,
+    productId: string,
+    price: number,
+    images: [
+      {
+        url: string,
+        public_id:string
+      },
+    ]
+    quantity: number,
+    count: number,
+    _id: string,
+    removeItemFromCartHandler: (productId : string) => void
+    refetchCartItems : () => void,
   }

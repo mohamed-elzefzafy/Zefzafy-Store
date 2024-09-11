@@ -166,7 +166,7 @@ const [quantity, setQuantity] = useState(1);
 // }
 
 console.log(quantity);
-const addToCartHandler = async() => {
+ const addToCartHandler = async() => {
   if (!ProductID) {
     return;
   }
@@ -176,8 +176,10 @@ const addToCartHandler = async() => {
   dispatch(setCartItemLength(res?.cartItems?.length))
   
   } catch (error) {
-    
+    const errorMessage = (error as { data?: { message?: string } }).data?.message;
+    toast.error(errorMessage as string);
   }
+
 }
 
 

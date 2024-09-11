@@ -1,14 +1,8 @@
-import { Box, Stack, Typography, Select, MenuItem, useTheme, SelectChangeEvent, Button } from "@mui/material";
-import { useState } from "react";
-import { TCartItems } from "../../types";
+import { Box, Button, Stack, Typography, useTheme } from "@mui/material";
 
-const OrderItem = ({ count, images, name, price, quantity }: TCartItems) => {
-  const [Quantity, setQuantity] = useState(1);
+
+const OrderItem = () => {
   const theme = useTheme();
-
-  const handleQuantityChange = (event: SelectChangeEvent<number>) => {
-    setQuantity(Number(event.target.value));
-  };
 
   return (
     <Stack
@@ -33,7 +27,6 @@ const OrderItem = ({ count, images, name, price, quantity }: TCartItems) => {
         }}
       >
         <img
-          src={images[0].url}
           alt="Product"
           style={{
             width: "100%",
@@ -44,53 +37,32 @@ const OrderItem = ({ count, images, name, price, quantity }: TCartItems) => {
         />
       </Box>
 
-      <Stack
-        spacing={2}
-        sx={{
-          width: "100%",
-          textAlign: { xs: "center", sm: "left" },
-        }}
-      >
+      <Stack spacing={2} sx={{ width: "100%", textAlign: { xs: "center", sm: "left" } }}>
         <Typography variant="h6" fontWeight="bold">
-          {name}
+          {/* Product Name */}
         </Typography>
 
-        <Stack direction="row" alignItems="center" justifyContent={{xs : "center" , sm : "flex-start"}} gap={15}>
+        <Stack direction="row" alignItems="center" justifyContent={{ xs: "center", sm: "flex-start" }} gap={2}>
           <Typography variant="body1" fontWeight="bold">
             Price:
           </Typography>
           <Typography variant="body1" fontWeight="bold">
-            $ {price}
+            {/* $ Price */}
           </Typography>
         </Stack>
 
-        <Stack direction="row" alignItems="center" justifyContent={{xs : "center" , sm : "flex-start"}} gap={17}>
+        <Stack direction="row" alignItems="center" justifyContent={{ xs: "center", sm: "flex-start" }} gap={2}>
           <Typography variant="body2" color="text.secondary">
             In Stock:
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {count  ? count : "Out of Stock"}
+            {/* Stock Count */}
           </Typography>
         </Stack>
 
-        <Stack
-          flexDirection="row"
-          alignItems="flex-end"
-          justifyContent={{ xs: "center", sm: "flex-start" }}
-          gap={11}
-        >
+        <Stack direction="row" alignItems="flex-end" justifyContent={{ xs: "center", sm: "flex-start" }} gap={2}>
           <Typography variant="body1">Quantity:</Typography>
-          <Select
-            value={quantity}
-            onChange={handleQuantityChange}
-            sx={{ width: "60px", height: "30px" }}
-          >
-            {Array.from({ length: count }, (_, index) => (
-              <MenuItem key={index + 1} value={index + 1}>
-                {index + 1}
-              </MenuItem>
-            ))}
-          </Select>
+          <Typography variant="body1">2</Typography>
         </Stack>
 
         <Box>
@@ -102,5 +74,6 @@ const OrderItem = ({ count, images, name, price, quantity }: TCartItems) => {
     </Stack>
   );
 };
+
 
 export default OrderItem;
