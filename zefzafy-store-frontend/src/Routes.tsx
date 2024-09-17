@@ -11,7 +11,9 @@ import OrdersPage from "./pages/OrdersPage";
 import AdminLayout from "./pages/adminDashboard/AdminLayout";
 import AdminOrdersPage from "./pages/adminDashboard/AdminOrdersPage";
 import AdminDasboardPage from "./pages/adminDashboard/AdminDasboardPage";
-import AdminproductsPage from "./pages/adminDashboard/AdminproductsPage";
+import AdminproductsPage from "./pages/adminDashboard/AdminProductsPage";
+import EditProductPage from "./pages/adminDashboard/EditProductPage";
+import AddProductPage from "./pages/adminDashboard/AddProductPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -29,6 +31,8 @@ const router = createBrowserRouter(
   <Route index={true} element={<AdminDasboardPage/>}/>
   <Route path='orders' element={<AdminOrdersPage/>}/>
   <Route path='products' element={<AdminproductsPage/>}/>
+  <Route path='addproduct' element={<AddProductPage/>}/>
+  <Route path='editproduct/:id' element={<EditProductPage/>}/>
   </Route>
 
   

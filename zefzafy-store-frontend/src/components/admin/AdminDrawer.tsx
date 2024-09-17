@@ -9,11 +9,11 @@ import ListItemText from '@mui/material/ListItemText';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useEffect, useState } from 'react';
 import { ContactsOutlined, HomeOutlined, PeopleOutlined, ReceiptLongOutlined } from '@mui/icons-material';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { grey } from '@mui/material/colors';
 
-const drawerWidth = 240;
 
+const drawerWidth = 240;
 const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
   transition: theme.transitions.create('width', {
@@ -58,7 +58,7 @@ const AdminDashboardArrayList = [
   {
     text: "Add Product",
     icon: <ContactsOutlined />,
-    path: "/contacts",
+    path: "/admin/addproduct",
   },
   {
     text: "Edit Product",
@@ -80,7 +80,9 @@ const AdminDrawer = () => {
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
   const [open, setOpen] = useState(isLargeScreen);
-
+  const location = useLocation();
+  console.log(location.pathname.split('-')[1]);
+  
   useEffect(() => {
     setOpen(isLargeScreen);
   }, [isLargeScreen]);

@@ -22,6 +22,16 @@ export interface IProduct {
   updatedAt: string;
 }
 
+export interface ICreateProduct {
+  name: string;
+  description: string;
+  price: number;
+  countInStock: number;
+  category: string;
+  images: CloudinaryObject[];
+}
+
+
 export interface IReviewsResult {
   _id: string;
   comment: string;
