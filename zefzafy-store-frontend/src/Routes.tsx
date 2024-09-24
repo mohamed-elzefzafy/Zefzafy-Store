@@ -32,7 +32,7 @@ const router = createBrowserRouter(
   <Route path='orders' element={<AdminOrdersPage/>}/>
   <Route path='products' element={<AdminproductsPage/>}/>
   <Route path='addproduct' element={<AddProductPage/>}/>
-  <Route path='editproduct/:id' element={<EditProductPage/>}/>
+  <Route path='editproduct/:productId' element={<EditProductPage/>}/>
   </Route>
 
   

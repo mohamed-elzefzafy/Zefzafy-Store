@@ -1,18 +1,19 @@
-import { DataGrid, GridColDef, GridRenderCellParams, GridToolbar } from "@mui/x-data-grid";
+import React, { useState } from 'react';
+import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useDeleteProductMutation, useGetProductsForAdminQuery } from "../../redux/slices/productsApiSlice";
-import { Box, IconButton, Typography, useMediaQuery } from "@mui/material";
+import { Box, IconButton, Pagination, Typography, useMediaQuery } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 
 const AdminproductsPage = () => {
-  const { data, refetch } = useGetProductsForAdminQuery();
+  const [currentPage, setCurrentPage] = useState(1);
+  const { data, refetch } = useGetProductsForAdminQuery(currentPage.toString());
   const [deleteProduct] = useDeleteProductMutation();
   const navigate = useNavigate();
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const isMediumScreen = useMediaQuery(theme.breakpoints.between("sm", "md"));
-  
+
   const columns: GridColDef[] = [
     {
       field: "id",
@@ -105,6 +106,12 @@ const AdminproductsPage = () => {
     }
   };
 
+  // Handle page change
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setCurrentPage(value);
+    refetch(); // Refetch products for the new page
+  };
+
   return (
     <Box sx={{ height: 600, width: isSmallScreen ? "100%" : "95%", mx: "auto", mt: 2 }}>
       <Typography variant={isSmallScreen ? "body2" : "body1"} sx={{ my: 1, ml: 1 }}>
@@ -113,11 +120,19 @@ const AdminproductsPage = () => {
       <DataGrid
         rows={rows}
         columns={columns}
-        slots={{ toolbar: GridToolbar }}
-        autoHeight={isSmallScreen} // Adjust height for small screens
+        autoHeight={isSmallScreen}
+        // disablePagination // Disable DataGrid's built-in pagination
         sx={{
-          fontSize: isSmallScreen ? "12px" : "14px", // Adjust font size for small screens
+          fontSize: isSmallScreen ? "12px" : "14px",
+          "& .MuiToolbar-root" : {display : "none"}
         }}
+      />
+      <Pagination
+        count={data?.pagination.pages} // Total number of pages from API
+        page={currentPage}
+        onChange={handlePageChange}
+        color="primary"
+        sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}
       />
     </Box>
   );

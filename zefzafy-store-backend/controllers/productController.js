@@ -78,66 +78,55 @@ const {pagination , pageSize , skip} = await paginationFunction(6 , req , Produc
  * @method  PUT
  * @access  private  admin 
  ----------------------------------------*/
- export const updateProduct = asyncHandler(async (req , res , next) => {
-  const {name , price  , category , description , countInStock}  = req.body;
+ export const updateProduct = asyncHandler(async (req, res, next) => {
+  const { name, price, category, description, countInStock, existingImages } = req.body;
   const product = await ProductModel.findById(req.params.id);
   if (!product) {
-    return next(customErrorClass.create(`there's no product with id (${req.params.id})` , 400))
+    return next(customErrorClass.create(`No product found with id (${req.params.id})`, 400));
   }
 
-if (category) {
-  let categoryExist= await CategoryModel.findOne({_id : category});
-  if (!categoryExist) {
-    return next(customErrorClass.create(`this category not exist` , 400))
+  // Check if category exists
+  if (category) {
+    let categoryExist = await CategoryModel.findOne({ _id: category });
+    if (!categoryExist) {
+      return next(customErrorClass.create(`This category does not exist`, 400));
+    }
   }
-}
 
+  // Update basic product information
   product.name = name || product.name;
   product.price = price || product.price;
   product.category = category || product.category;
   product.description = description || product.description;
   product.countInStock = countInStock || product.countInStock;
-  
 
-  // await product.save();
+  // Handle images
+  if (req.files?.length > 0) {
+    // If new images were uploaded, delete old images and add new ones
+    if (product.images.length > 0) {
+      const public_ids = product.images.map((image) => image.public_id);
+      if (public_ids.length > 0) {
+        await cloudinaryRemoveMultipleImage(public_ids); // Remove old images from Cloudinary
+      }
+    }
 
-  if (req.files || req.body.images) {
-  
-if (product.images.length > 0) {
-  // Get the public ids from the images
-  const public_ids = product.images?.map((image) => image.public_id)
-  //  Delete all  images from cloudinary that belong to this product
-if (public_ids?.length > 0) {
-  await cloudinaryRemoveMultipleImage(public_ids)
-}
-}
+    // Upload new images
+    const results = await Promise.all(req.files.map((file) => cloudinaryUploadImage(file.path)));
 
+    // Update the product with the new images
+    product.images = results.map(result => ({
+      url: result.url,
+      public_id: result.public_id,
+    }));
+  } else if (existingImages && existingImages.length > 0) {
+    // If no new images were uploaded, retain the existing images sent from the frontend
+    product.images = existingImages.map((url) => ({ url }));  // Retain the image URLs
+  }
 
-
-let results = [];
-
-for (let file of req.files) {
-  const result =  await cloudinaryUploadImage(file?.path);
-  results.push(result);
-}
-
-let resultsArrayOfObjects = [];
- results.map(oneResult => {
-resultsArrayOfObjects.push( {
-  url :  oneResult.url,
-  public_id : oneResult.public_id
-})
-})
-
-product.images = resultsArrayOfObjects 
-
-
-
-}
-
-await product.save();
-res.status(201).json({message : "success" ,  product});
- })
+  // Save the updated product
+  await product.save();
+  res.status(200).json({ message: "Product updated successfully", product });
+});
 
 
   /**---------------------------------------
@@ -280,3 +269,9 @@ const  pagination =  {
 
     return {pagination , pageSize , skip}
 }
+
+
+
+
+
+

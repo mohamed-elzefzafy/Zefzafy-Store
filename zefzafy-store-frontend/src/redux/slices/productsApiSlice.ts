@@ -14,11 +14,12 @@ export const productsApiSlice = apiSlice.injectEndpoints({
     }),
 
     getProductsForAdmin: builder.query<IGetProduct, string | void>({
-      query: () => ({
-        url: `/api/v1/products/get-products`,
+      query: (page) => ({
+        url: `/api/v1/products/get-products?page=${page}`,
       }),
       keepUnusedDataFor: 5,
       providesTags: ["Product"],
+    
     }),
 
     
@@ -45,7 +46,7 @@ export const productsApiSlice = apiSlice.injectEndpoints({
       }),
 
     }),
-    createProduct: builder.mutation< IProduct , ICreateProduct>({
+    createProduct: builder.mutation< ICreateProduct , FormData>({
       query : (data) => ({
         url : `/api/v1/products/create-product`,
         method : "POST",
@@ -54,9 +55,17 @@ export const productsApiSlice = apiSlice.injectEndpoints({
 
     }),
 
+    updateProduct: builder.mutation<ICreateProduct, { productId: string; data: FormData }>({
+      query: ({ productId, data }) => ({
+        url: `/api/v1/products/update-product/${productId}`,  // Use productId here
+        method: "PUT",
+        body: data,  // The form data
+      }),
+    }),
 
-  }),
+    }),
+
 });
 
 export const { useGetProductsQuery , useGetOneProductQuery , useGetProductsCategoryQuery ,
-   useGetProductsForAdminQuery , useDeleteProductMutation , useCreateProductMutation} = productsApiSlice;
+   useGetProductsForAdminQuery , useDeleteProductMutation , useCreateProductMutation , useUpdateProductMutation} = productsApiSlice;

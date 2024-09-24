@@ -1,71 +1,54 @@
-import { Alert, Box, Button, Snackbar, SnackbarCloseReason, TextField, Typography, useTheme } from "@mui/material";
-import { ChangeEvent, useState } from "react";
+import { Autocomplete, Box, Button, TextField, Typography, useTheme } from "@mui/material";
+import { useState, ChangeEvent } from "react";
 import { useForm } from "react-hook-form";
-import { useRegisterUserMutation } from "../../redux/slices/usersApiSlice";
-import { ICreateProduct, IUserRegister } from "../../types";
-import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
 import { useCreateProductMutation } from "../../redux/slices/productsApiSlice";
+import { ICreateProduct } from "../../types";
+import toast from "react-hot-toast";
+import { useGetCategoriesQuery } from "../../redux/slices/categoryApiSlice";
 
 const AddProductPage = () => {
-  const navigate = useNavigate();
+  const {data : categoriesArray , isLoading , error} = useGetCategoriesQuery();
   const theme = useTheme();
   const {
     register,
     handleSubmit,
+    setValue,  // To manually set the value for category
+    reset,
     formState: { errors },
   } = useForm<ICreateProduct>();
-const [createProduct] = useCreateProductMutation();
 
-  const [profilePhoto, setProfilePhoto] = useState<File | null>(null);
+  const [createProduct] = useCreateProductMutation();
+  const [images, setImages] = useState<File[] | null>([]);
+  
+  const categories = categoriesArray;
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      setProfilePhoto(e.target.files[0]);
+      const filesArray = Array.from(e.target.files);
+      setImages(filesArray);
     }
   };
 
-  const onSubmit = async (data: IUserRegister) => {
-    console.log(data);
-
+  const onSubmit = async (data: ICreateProduct) => {
     const formData = new FormData();
-    formData.append("firstName", data.firstName);
-    formData.append("lastName", data.lastName);
-    formData.append("email", data.email);
-    formData.append("password", data.password);
-    if (profilePhoto) {
-      formData.append("profilePhoto", profilePhoto);
-    }
+    formData.append("name", data.name);
+    formData.append("description", data.description);
+    formData.append("price", data.price.toString());
+    formData.append("countInStock", data.countInStock.toString());
+    formData.append("category", data.category);  // This will now be the selected _id
+    images?.forEach((image) => formData.append("images", image));
 
     try {
-  await registerUser(formData).unwrap();
-      toast.success("account created succefully");
-      setTimeout(() => {
-        navigate("/login")
-      }, 2000)
+      await createProduct(formData).unwrap();
+      toast.success("Product created successfully");
+      reset();
+      setImages([]);
     } catch (error) {
       const errorMessage = (error as { data?: { message?: string } }).data?.message;
       toast.error(errorMessage as string);
     }
   };
 
-    const [open, setOpen] = useState(false);
-
-    const handleClick = () => {
-      setOpen(true);
-    };
-  
-    const handleClose = (
-      event: React.SyntheticEvent | Event,
-      reason?: SnackbarCloseReason,
-    ) => {
-      if (reason === 'clickaway') {
-        return;
-      }
-  
-      setOpen(false);
-    };
-  
   return (
     <Box
       component="form"
@@ -78,65 +61,75 @@ const [createProduct] = useCreateProductMutation();
       }}
     >
       <Typography variant="h4">Add Product</Typography>
+
       <TextField
         label="Product name"
         {...register("name", { required: "Product name is required" })}
-        error={errors.name ? true : false}
-        helperText={errors.name && "name is required"}
-        fullWidth
-        margin="normal"
-      />{" "}
-  
-      <TextField
-        label="Description"
-        {...register("description", { required: "description is required" })}
-        error={errors.description ? true : false}
-        helperText={errors.description && "ldescription is required"}
-        fullWidth
-        margin="normal"
-      />{" "}
-  
-      <TextField
-        label="Price"
-        type="number"
-        {...register("price", { required: "price is required", })}  
-        error={errors.price ? true : false}
-        helperText={
-          errors.price && "price is required"
-        }
+        error={!!errors.name}
+        helperText={errors.name && "Product name is required"}
         fullWidth
         margin="normal"
       />
 
+      <TextField
+        label="Description"
+        {...register("description", { required: "Description is required" })}
+        error={!!errors.description}
+        helperText={errors.description && "Description is required"}
+        fullWidth
+        margin="normal"
+      />
+
+      <TextField
+        label="Price"
+        type="number"
+        {...register("price", { required: "Price is required" })}
+        error={!!errors.price}
+        helperText={errors.price && "Price is required"}
+        fullWidth
+        margin="normal"
+      />
 
       <TextField
         label="Count In Stock"
         type="number"
-        {...register("countInStock", { required: "Count is required", })}  
-        error={errors.countInStock ? true : false}
-        helperText={
-          errors.countInStock && "Count is required"
-        }
+        {...register("countInStock", { required: "Count in stock is required" })}
+        error={!!errors.countInStock}
+        helperText={errors.countInStock && "Count in stock is required"}
         fullWidth
         margin="normal"
       />
-{/* TODO : category must be choose list  */}
-<TextField
-        label="category"
-        {...register("category", { required: "description is required" })}
-        error={errors.category ? true : false}
-        helperText={errors.category && "category is required"}
-        fullWidth
-        margin="normal"
-      />{" "}
 
-      {profilePhoto && (
+      {/* Autocomplete to select category */}
+      <Autocomplete
+        disablePortal
+        options={categories as []}
+        getOptionLabel={(option) => option.name}  // Show the name in the options
+        onChange={(event: any, newValue: { _id: string; name: string } | null) => {
+          setValue("category", newValue ? newValue._id : "", { shouldValidate: true });
+        }}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Category"
+            error={!!errors.category}
+            helperText={errors.category && "Category is required"}
+          />
+        )}
+        sx={{ my: 2, width: "100%" }}
+      />
+
+      {images && images.map((image) => (
         <img
-          src={URL.createObjectURL(profilePhoto)}
-          width={200}
-          style={{ objectFit: "contain", borderRadius: "5px" }}
+          key={image.name}
+          src={URL.createObjectURL(image)}
+          width={150}
+          height={150}
+          style={{ objectFit: "contain", borderRadius: "3px", marginLeft: "1px", marginRight: "1px" }}
+          alt="product"
         />
-      )}
+      ))}
+
       <TextField
         label="Profile Image"
         type="file"
@@ -144,17 +137,17 @@ const [createProduct] = useCreateProductMutation();
         fullWidth
         margin="normal"
         InputLabelProps={{ shrink: true }}
+        inputProps={{ multiple: true }}  // Enable multiple file selection
       />
+
       <Button
         type="submit"
         variant="contained"
         color="primary"
-        sx={{ mt: 2, textTransform: "capitalize" , bgcolor : theme.palette.mainColor?.main , color : "white" }}
-        disabled={isLoading}
+        sx={{ mt: 2, textTransform: "capitalize", bgcolor: theme.palette.mainColor?.main, color: "white" }}
       >
-        Register
+        Submit
       </Button>
-
     </Box>
   );
 };
