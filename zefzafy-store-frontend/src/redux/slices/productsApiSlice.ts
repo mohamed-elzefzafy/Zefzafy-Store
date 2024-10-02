@@ -15,7 +15,7 @@ export const productsApiSlice = apiSlice.injectEndpoints({
 
     getProductsForAdmin: builder.query<IGetProduct, string | void>({
       query: (page) => ({
-        url: `/api/v1/products/get-products?page=${page}`,
+        url: `/api/v1/products/admin-getproducts?page=${page}}`,
       }),
       keepUnusedDataFor: 5,
       providesTags: ["Product"],
@@ -33,7 +33,7 @@ export const productsApiSlice = apiSlice.injectEndpoints({
     }),
     getProductsCategory: builder.query<IProduct[], string | void>({
       query: (categoryId) => ({
-        url: `/api/v1/products/category-products/?${categoryId}`,
+        url: `/api/v1/products/category-products/${categoryId}`,
       }),
       keepUnusedDataFor: 5,
       providesTags: ["Product"],

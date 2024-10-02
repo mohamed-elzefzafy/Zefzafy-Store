@@ -72,6 +72,23 @@ const {pagination , pageSize , skip} = await paginationFunction(6 , req , Produc
 });
 
 
+/**---------------------------------------
+   * @desc    get All Products
+   * @route   /api/v1/products/get-products
+   * @method  GET
+   * @access  private
+   ----------------------------------------*/
+   export const getAllProductsAdmin = asyncHandler(async (req, res, next) => {
+    // const {productQuery , sortOptions} = sortAndSearchOptions(req);
+    const {pagination , pageSize , skip} = await paginationFunction(20 , req , ProductModel );
+      const products = await ProductModel.find().sort({"updatedAt" : "desc"})
+      .populate("category").limit(pageSize).skip(skip);
+    
+      res.status(200).json({products , pagination});
+    });
+    
+
+
  /**---------------------------------------
  * @desc    update product
  * @route   /api/v1/products/update-product/:id

@@ -31,6 +31,15 @@ export interface ICreateProduct {
   images: CloudinaryObject[];
 }
 
+export interface ICreateCategory {
+  name: string;
+  image: CloudinaryObject[];
+}
+export interface IUpdateCategory {
+  name?: string;
+  image?: CloudinaryObject[];
+}
+
 
 export interface IReviewsResult {
   _id: string;

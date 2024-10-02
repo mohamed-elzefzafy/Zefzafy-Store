@@ -46,6 +46,9 @@ const ProductDetailsPage = () => {
 
 
 const procutsCategoryRelated = procutsCategory?.filter(prod => prod._id !== product?._id);
+console.log(procutsCategory);
+console.log(product?.category._id);
+
 
 const [reviewId, setReviewId] = useState("");
 
@@ -115,11 +118,10 @@ const updateReviewFunc = async() => {
     return;
   };
   try {
-    const res =  await updateReview({comment: comment, rating: Number(rating) ,
+    await updateReview({comment: comment, rating: Number(rating) ,
        productId : ProductID , reviewId : reviewId});
        toast.success("Review updated successfully");
        refetch();
-    console.log(res);
     setshowAddButtonState(false);
     setComment("");
     setRating(0);
@@ -133,9 +135,12 @@ const updateReviewFunc = async() => {
 
 
 const deleteReviewHandler = async(reviewId : string) => {
+
     try {
-      await deleteReview({productId : ProductID , reviewId : reviewId}).unwrap();
-      refetch();
+    
+     await deleteReview({productId : ProductID , reviewId : reviewId}).unwrap();
+      toast.success("Review deleted successfully");
+         refetch();
     }  catch (error) {
       const errorMessage = (error as { data?: { message?: string } }).data?.message;
       toast.error(errorMessage as string);
@@ -350,7 +355,7 @@ console.log(quantity);
           {    userInfo?._id === review?.userId    &&  
             <>
               <Delete sx={{ color: theme.palette.error.main  , cursor : "pointer"}}
-              onClick={() => deleteReviewHandler(review._id)}/>
+              onClick={() => deleteReviewHandler(review?._id)}/>
              <BorderColor onClick={() => updateReviewHandler(review)} 
              sx={{ color: theme.palette.primary.main , cursor : "pointer" }}/>
             </>

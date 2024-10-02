@@ -56,9 +56,9 @@ const AdminDashboardArrayList = [
   { text: "Dashboard", icon: <HomeOutlined/>, path: "/admin" },
   { text: "Products Table", icon: <PeopleOutlined />, path: "/admin/products" },
   {
-    text: "Add Product",
+    text: "Categories Table",
     icon: <ContactsOutlined />,
-    path: "/admin/addproduct",
+    path: "/admin/categories",
   },
   {
     text: "Edit Product",

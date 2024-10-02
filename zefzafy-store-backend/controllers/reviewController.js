@@ -89,7 +89,7 @@ res.status(200).json(product);
 
 
               /**---------------------------------------
- * @desc    remove Review By LoggedUser
+ * @desc    update Review By LoggedUser
  * @route   /api/v1/reviews/update-review/:productId
  * @method  PUT
  * @access  private  user

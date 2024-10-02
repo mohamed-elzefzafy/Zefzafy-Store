@@ -14,6 +14,9 @@ import AdminDasboardPage from "./pages/adminDashboard/AdminDasboardPage";
 import AdminproductsPage from "./pages/adminDashboard/AdminProductsPage";
 import EditProductPage from "./pages/adminDashboard/EditProductPage";
 import AddProductPage from "./pages/adminDashboard/AddProductPage";
+import AdminCategoriesPage from "./pages/adminDashboard/AdminCategoriesPage";
+import AddCategoryPage from "./pages/adminDashboard/AddCategoryPage";
+import EditCategoryPage from "./pages/adminDashboard/EditCategoryPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -33,6 +36,10 @@ const router = createBrowserRouter(
   <Route path='products' element={<AdminproductsPage/>}/>
   <Route path='addproduct' element={<AddProductPage/>}/>
   <Route path='editproduct/:productId' element={<EditProductPage/>}/>
+  <Route path='categories' element={<AdminCategoriesPage/>}/>
+  <Route path='categories' element={<AdminCategoriesPage/>}/>
+  <Route path='addcategory' element={<AddCategoryPage/>}/>
+  <Route path='editcategory/:categorytId' element={<EditCategoryPage/>}/>
   </Route>
 
   

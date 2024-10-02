@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useDeleteProductMutation, useGetProductsForAdminQuery } from "../../redux/slices/productsApiSlice";
-import { Box, IconButton, Pagination, Typography, useMediaQuery } from "@mui/material";
+import { Box, Button, IconButton, Pagination, Stack, Typography, useMediaQuery } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
@@ -114,9 +114,13 @@ const AdminproductsPage = () => {
 
   return (
     <Box sx={{ height: 600, width: isSmallScreen ? "100%" : "95%", mx: "auto", mt: 2 }}>
-      <Typography variant={isSmallScreen ? "body2" : "body1"} sx={{ my: 1, ml: 1 }}>
+     <Stack sx={{flexDirection : "row" , justifyContent : "space-between" , alignItems : "center" , mb : 2 , mr:7}}>
+     <Typography variant={isSmallScreen ? "body2" : "body1"} sx={{ my: 1, ml: 1 }}>
         Products:
       </Typography>
+      <Button  variant='contained' sx={{textTransform :"capitalize"}}
+       onClick={()=> navigate('/admin/addproduct')}>Add Product</Button>
+     </Stack>
       <DataGrid
         rows={rows}
         columns={columns}
@@ -127,13 +131,16 @@ const AdminproductsPage = () => {
           "& .MuiToolbar-root" : {display : "none"}
         }}
       />
-      <Pagination
-        count={data?.pagination.pages} // Total number of pages from API
-        page={currentPage}
-        onChange={handlePageChange}
-        color="primary"
-        sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}
-      />
+{data?.pagination.pages && data?.pagination.pages > 1 && 
+
+<Pagination
+count={data?.pagination.pages} // Total number of pages from API
+page={currentPage}
+onChange={handlePageChange}
+color="primary"
+sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}
+/>
+}
     </Box>
   );
 };
