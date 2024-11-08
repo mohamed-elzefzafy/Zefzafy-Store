@@ -40,3 +40,17 @@ import ProductModel from './../models/productModel.js';
     
    res.status(200).json(user);
    }); 
+
+
+      /**---------------------------------------
+   * @desc    register user
+   * @route   /api/v1/wishlist/add-wishlist/:productId
+   * @method  PUT
+   * @access  public 
+   ----------------------------------------*/
+   export const getLoggedUserWishlist = asyncHandler(async (req , res , next) => {
+    const user = await UserModel.findById(req.user._id);
+    const userWishlistIds = user.wishList.map(wishlist => wishlist._id);
+    const products = await ProductModel.find({_id : {$in: userWishlistIds}});
+    res.status(200).json(products);
+   })

@@ -5,13 +5,14 @@ import { useGetOneProductQuery, useUpdateProductMutation } from "../../redux/sli
 import { ICreateProduct } from "../../types";
 import toast from "react-hot-toast";
 import { useGetCategoriesQuery } from "../../redux/slices/categoryApiSlice";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const EditProductPage = () => {
   const { productId } = useParams();
   const { data: product } = useGetOneProductQuery(productId);
   const { data: categoriesArray } = useGetCategoriesQuery();
   const theme = useTheme();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -65,6 +66,7 @@ const EditProductPage = () => {
   
       await updateProduct({ data: formData, productId }).unwrap();
       toast.success("Product updated successfully");
+      navigate("/admin/products")
     } catch (error) {
       const errorMessage = (error as { data?: { message?: string } }).data?.message;
       toast.error(errorMessage as string);

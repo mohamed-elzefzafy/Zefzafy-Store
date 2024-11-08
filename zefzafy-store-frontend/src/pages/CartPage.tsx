@@ -3,11 +3,13 @@ import CartItem from "../components/cart/CartItem";
 import { useDeleteItemFromCartMutation, useGetUserCartQuery } from "../redux/slices/cartApiSlice";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 
 
 
 const CartPage = () => {
+  const navigate = useNavigate();
   const { data: userCartItems , refetch : refetchCartItems} = useGetUserCartQuery();
   const [deleteItemFromCart] = useDeleteItemFromCartMutation();
   useEffect(()=>{
@@ -62,7 +64,7 @@ const CartPage = () => {
           <Divider />
       
         </>}
-          <Button variant="contained" size="small" sx={{ mb: 1, textTransform: "capitalize" }}>
+          <Button onClick={()=> navigate('/create-order')} variant="contained" size="small" sx={{ mb: 1, textTransform: "capitalize" }}>
             Proceed to Checkout
           </Button>
         </Card>

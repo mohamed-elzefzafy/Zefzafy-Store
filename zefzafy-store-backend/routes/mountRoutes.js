@@ -4,6 +4,7 @@ import orderRouter from "./orderRoute.js";
 import productRouter from "./productRoute.js";
 import reviewRouter from "./reviewRoute.js";
 import userRouter from "./userRoute.js";
+import utilsRouter from "./utilsRoute.js";
 import wishlistRouter from "./wishlistRoute.js";
 
 
@@ -15,6 +16,7 @@ const mountRoutes = (app) => {
   app.use("/api/v1/wishlist" , wishlistRouter);
   app.use("/api/v1/cart" , cartRouter);
   app.use("/api/v1/orders" , orderRouter);
+  app.use("/api/v1/utils" , utilsRouter);
 }
 
 

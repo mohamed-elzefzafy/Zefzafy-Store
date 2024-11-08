@@ -1,29 +1,27 @@
 import { Outlet } from "react-router-dom";
 import { Box } from "@mui/material";
-import { Category, Dashboard, PeopleOutlined, Receipt, TabletMac } from "@mui/icons-material";
+import { AccountBox,Receipt, Shop2 } from "@mui/icons-material";
 import DrawerComponent from "../../components/DrawerComponent";
 
 
 const AdminDashboardArrayList = [
-  { text: "Dashboard", icon: <Dashboard />, path: "/admin" },
-  { text: "Products Table", icon: <TabletMac />, path: "/admin/products" },
-  {
-    text: "Categories Table",
-    icon: <Category />,
-    path: "/admin/categories",
+{
+    text: "profile",
+    icon: <AccountBox />,
+    path: "/user",
   },
-  {
-    text: "Users Table",
-    icon: <PeopleOutlined />,
-    path: "/admin/users",
+{
+    text: "Wish List",
+    icon: <Shop2 />,
+    path: "/user/wishlist",
   },
-  {
-    text: "Orders Table",
+{
+    text: "User Orders",
     icon: <Receipt />,
-    path: "/admin/orders",
+    path: "/user/orders",
   },
 ];
-const AdminLayout = () => {
+const UserLayout = () => {
   return (
     <Box>
       <Box
@@ -40,4 +38,4 @@ const AdminLayout = () => {
   );
 };
 
-export default AdminLayout;
+export default UserLayout;

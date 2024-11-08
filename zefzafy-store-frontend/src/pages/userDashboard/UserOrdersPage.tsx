@@ -6,13 +6,13 @@ import { useTheme } from "@mui/material/styles";
 import { useDeleteUserMutation } from '../../redux/slices/usersApiSlice';
 import toast from 'react-hot-toast';
 import { red } from '@mui/material/colors';
-import { useGetOrdersByAdminQuery } from '../../redux/slices/ordersApiSlice';
+import { useGetOrdersByAdminQuery, useGetOrdersByLoggedUserQuery } from '../../redux/slices/ordersApiSlice';
 import { useNavigate } from 'react-router-dom';
 
 
-const AdminOrdersPage = () => {
+const UserOrdersPage = () => {
  const [currentPage, setCurrentPage] = useState(1);
- const {data , refetch} = useGetOrdersByAdminQuery(currentPage.toString());
+ const {data , refetch} = useGetOrdersByLoggedUserQuery();
  const [deleteUser] = useDeleteUserMutation();
  const navigate = useNavigate();
  console.log(data?.orders);
@@ -71,6 +71,14 @@ const AdminOrdersPage = () => {
       flex: 1,
       align: "center",
       headerAlign: "center",
+      
+      // renderCell: (params: GridRenderCellParams<any>) => (
+      //   <img
+      //     src={params.value}
+      //     alt="userProfile"
+      //     style={{ width: "40px", height: "40px", objectFit: "cover", borderRadius: "50%" }}
+      //   />
+      // ),
     },
     {
       field: "Deliverd",
@@ -102,6 +110,25 @@ const AdminOrdersPage = () => {
     Deliverd: order.isDelivered ? "Delivered" : "Not-Delivered",
     actions: order._id,
   })) || [];
+
+  // const handleDeleteUser = async (userId: string) => {
+  //   try {
+  //     const willDelete = await swal({
+  //       title: "Are you sure?",
+  //       text: "Are you sure that you want to delete this user?",
+  //       icon: "warning",
+  //       dangerMode: true,
+  //     });
+       
+  //     if (willDelete) {
+  //       await deleteUser({ userId }).unwrap();
+  //       toast.success("user deleted successfully");
+  //       refetch();
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   // Handle page change
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
@@ -140,4 +167,4 @@ sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}
   );
 };
 
-export default AdminOrdersPage;
+export default UserOrdersPage;

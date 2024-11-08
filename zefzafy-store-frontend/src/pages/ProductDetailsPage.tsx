@@ -443,7 +443,7 @@ console.log(quantity);
         }}
       >
       {procutsCategoryRelated?.map(product =>
-             <ProductCard key={product._id} {...product}/>
+             <ProductCard key={product._id} productInfo={product} />
 
       )}
     </Stack>

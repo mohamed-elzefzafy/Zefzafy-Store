@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useDeleteProductMutation, useGetProductsForAdminQuery } from "../../redux/slices/productsApiSlice";
 import { Box, Button, IconButton, Pagination, Stack, Typography, useMediaQuery } from "@mui/material";
@@ -125,7 +125,6 @@ const AdminproductsPage = () => {
         rows={rows}
         columns={columns}
         autoHeight={isSmallScreen}
-        // disablePagination // Disable DataGrid's built-in pagination
         sx={{
           fontSize: isSmallScreen ? "12px" : "14px",
           "& .MuiToolbar-root" : {display : "none"}

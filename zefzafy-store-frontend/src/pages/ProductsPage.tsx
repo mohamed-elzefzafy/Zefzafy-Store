@@ -37,6 +37,7 @@ const ProductsPage = () => {
   const [SortPrice, setSortPrice] = useState<"price" | "priceDesc">("price");
   const [currentPage, setCurrentPage] = useState(1);
 
+  
   const { data, isLoading } = useGetProductsQuery(
     `?sort=${SortPrice}&page=${currentPage}&category=${category}&keyword=${searchKeyWord}&rating=${rating}`
   );
@@ -205,7 +206,7 @@ const ProductsPage = () => {
       >
         {data?.products.length === 0 ? (<h2>No Products</h2>) : (
           data?.products?.map((product) => (
-            <ProductCard key={product._id} {...product} />
+            <ProductCard key={product._id} productInfo={product} />
           ))
         )}
       </Stack>

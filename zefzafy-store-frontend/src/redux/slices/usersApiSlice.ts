@@ -1,3 +1,4 @@
+import { IGetUser } from "../../types";
 import { apiSlice } from "./apiSlice";
 
 
@@ -24,30 +25,33 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       method : "POST",
       })
     }),
+    getUsersAdmin: builder.query<IGetUser, string | void>({
+      query: (page) => ({
+        url: `/api/v1/users/admin-get-users?page=${page}`,
+      }),
+      keepUnusedDataFor: 5,
+      providesTags: ["User"],
+    
+    }),
 
-    // updateProfile : builder.mutation({
-    //   query : (data) => ({
-    //     url : `/api/v1/users/profile`,
-    //     method : "PUT",
-    //     body : data
-    //   })
-    // }),
-    // getUsers : builder.query({
-    //   query : () => ({
-    //     url : `api/v1/users`,
-    //   }),
-    //   providesTags : ["Users"],
-    //   keepUnusedDataFor : 5
-    // }),
-    // deleteUser : builder.mutation({
-    //   query : (id) => ({
-    //     url : `/api/v1/users/${id}`,
-    //     method : "DELETE"
-    //   }),
-    //   invalidatesTags : ["Users"] // refresh the data
-    // })
+    deleteUser: builder.mutation< void , {userId : string}>({
+      query : (data) => ({
+        url : `api/v1/users/delete-user/${data.userId}`,
+        method : "DELETE",
+      }),
+    }),
+
+    updateUserProfile: builder.mutation<IGetUser, {data : FormData}>({
+      query: ({data }) => ({
+        url: `/api/v1/users/update-user`,  
+        method: "PUT",
+        body: data,  // The form data
+      }),
+    }),
+
   })
 })
 
 
-export const { useLogoutMutation , useRegisterUserMutation , useLoginMutation} = usersApiSlice;
+export const { useLogoutMutation , useRegisterUserMutation , useLoginMutation ,
+   useGetUsersAdminQuery , useDeleteUserMutation , useUpdateUserProfileMutation} = usersApiSlice;

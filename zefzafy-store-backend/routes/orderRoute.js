@@ -9,7 +9,7 @@ orderRouter.use(verifyIsLoggedIn);
 //TODO: make express validate to create order
 orderRouter.route("/create-Order").post( verifyUserNotAdmin , createOrderValidation , createOrder);
 orderRouter.route("/get-user-orders").get( verifyUserNotAdmin , getUserOrders);
-orderRouter.route("/get-one-order/:orderId").get(  getOneOrder);
+orderRouter.route("/get-one-order/:orderId").get( getOneOrder);
 
 // admin routes
 orderRouter.use(verifyIsAdmin);

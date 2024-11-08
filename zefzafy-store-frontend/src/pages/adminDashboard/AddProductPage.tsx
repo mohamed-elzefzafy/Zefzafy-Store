@@ -1,4 +1,5 @@
-import { Autocomplete, Box, Button, TextField, Typography, useTheme } from "@mui/material";
+import {Box, Button, FormControl, FormHelperText, InputLabel, MenuItem,
+   Select, TextField, Typography, useTheme } from "@mui/material";
 import { useState, ChangeEvent } from "react";
 import { useForm } from "react-hook-form";
 import { useCreateProductMutation } from "../../redux/slices/productsApiSlice";
@@ -15,10 +16,19 @@ const AddProductPage = () => {
     setValue,  // To manually set the value for category
     reset,
     formState: { errors },
-  } = useForm<ICreateProduct>();
+  } = useForm<ICreateProduct>({
+    defaultValues: {
+      name: "",
+      description: "",
+      price: 0,
+      countInStock: 0,
+      category: "",  // Initialize category
+    },
+  });
 
   const [createProduct] = useCreateProductMutation();
   const [images, setImages] = useState<File[] | null>([]);
+  const [Category, setCategory] = useState("");
   
   const categories = categoriesArray;
 
@@ -35,20 +45,21 @@ const AddProductPage = () => {
     formData.append("description", data.description);
     formData.append("price", data.price.toString());
     formData.append("countInStock", data.countInStock.toString());
-    formData.append("category", data.category);  // This will now be the selected _id
+    formData.append("category", Category);
     images?.forEach((image) => formData.append("images", image));
-
+  
     try {
       await createProduct(formData).unwrap();
       toast.success("Product created successfully");
-      reset();
+      reset();  
       setImages([]);
+      setCategory("");
     } catch (error) {
       const errorMessage = (error as { data?: { message?: string } }).data?.message;
       toast.error(errorMessage as string);
     }
   };
-
+  
   return (
     <Box
       component="form"
@@ -100,24 +111,26 @@ const AddProductPage = () => {
         margin="normal"
       />
 
-      {/* Autocomplete to select category */}
-      <Autocomplete
-        disablePortal
-        options={categories as []}
-        getOptionLabel={(option) => option.name}  // Show the name in the options
-        onChange={(event: any, newValue: { _id: string; name: string } | null) => {
-          setValue("category", newValue ? newValue._id : "", { shouldValidate: true });
-        }}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label="Category"
-            error={!!errors.category}
-            helperText={errors.category && "Category is required"}
-          />
-        )}
-        sx={{ my: 2, width: "100%" }}
-      />
+<FormControl fullWidth sx={{ mb: 2 }}>
+        <InputLabel id="demo-simple-select-label">Category</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          {...register("category", { required: "category is required" })}
+          label="Category"
+          fullWidth
+          value={Category}
+          onChange={(e) => setCategory(e.target.value)}
+        >
+          {categoriesArray?.map((category) => (
+            <MenuItem value={category._id} key={category._id}>
+              {category.name}
+            </MenuItem>
+          ))}
+        </Select>
+        {errors.category && <FormHelperText error>{errors.category.message}</FormHelperText>}
+      </FormControl>
+
 
       {images && images.map((image) => (
         <img

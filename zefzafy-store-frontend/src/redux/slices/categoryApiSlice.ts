@@ -1,6 +1,6 @@
 import { EndpointBuilder } from "@reduxjs/toolkit/query";
 import { apiSlice } from "./apiSlice";
-import { ICategory, ICreateCategory, IUpdateCategory } from "../../types";
+import { ICategory, ICreateCategory, IGetCategory, IUpdateCategory } from "../../types";
 
 interface IGetProduct {
 
@@ -8,13 +8,22 @@ interface IGetProduct {
 
 export const categoriesApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder: EndpointBuilder<any, any, any>) => ({
-    getCategories: builder.query<ICategory[], void>({
-      query: () => ({
-        url: `/api/v1/categories`,
+    getCategories: builder.query<ICategory[],string | void>({
+      query: (page) => ({
+        url: `/api/v1/categories?page=${page}`,
       }),
       keepUnusedDataFor: 5,
       providesTags: ["Category"],
     }),
+
+    getCategoriesForAdmin: builder.query<IGetCategory,string | void>({
+      query: (page) => ({
+        url: `/api/v1/categories/admin?page=${page}`,
+      }),
+      keepUnusedDataFor: 5,
+      providesTags: ["Category"],
+    }),
+
     createCategory: builder.mutation< ICreateCategory , FormData>({
       query : (data) => ({
         url : `/api/v1/categories/create-category`,
@@ -38,7 +47,16 @@ export const categoriesApiSlice = apiSlice.injectEndpoints({
       providesTags: ["categories"],
     }),
 
+    deleteCategory: builder.mutation< void , {categoryId : string}>({
+      query : (data) => ({
+        url : `/api/v1/categories/delete-category/${data.categoryId}`,
+        method : "DELETE",
+      }),
+
+    }),
+
   }),
 });
 
-export const { useGetCategoriesQuery , useCreateCategoryMutation , useUpdateCategoryMutation , useGetOneCategoryQuery} = categoriesApiSlice;;
+export const { useGetCategoriesQuery , useCreateCategoryMutation , useUpdateCategoryMutation 
+  , useGetOneCategoryQuery , useDeleteCategoryMutation , useGetCategoriesForAdminQuery} = categoriesApiSlice;;

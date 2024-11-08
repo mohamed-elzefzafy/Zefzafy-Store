@@ -74,7 +74,7 @@ const Header =  () => {
   const navigate = useNavigate();
   const theme = useTheme();
   const [mode, setMode] =  useState(localStorage.getItem("mode") || "light");
-  const {userInfo} =useAppSelector(state => state.auth);
+  const {userInfo} = useAppSelector(state => state.auth);
   const { data: userCartItems } = useGetUserCartQuery();
   const {cartItemLength} = useAppSelector(state => state.cart)
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
@@ -202,8 +202,8 @@ const [logout] = useLogoutMutation();
 
               {userInfo.email && !userInfo.isAdmin   &&
               <IconButton  aria-label="cart" sx={{mr : {xs : 2 , md : 1}}}
-               onClick={()=> navigate("/user/cart")} >
-              <StyledBadge badgeContent={cartItemLength?? 0} color="secondary">
+               onClick={()=> navigate("/cart")} >
+              <StyledBadge badgeContent={Number(cartItemLength?? 0)} color="secondary">
                 <ShoppingCart sx={{color : "white" , fontSize : "18px" }}/>
               </StyledBadge>
             </IconButton>

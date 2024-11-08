@@ -11,8 +11,8 @@ const HomePage = () => {
     <Link to="/categories">Category page</Link>
     <Link to="/register">Register page</Link>
     <Link to="/login">Login page</Link>
-    <Link to="/user/cart">cart page</Link>
-    <Link to='/user/orders'>orders page</Link>
+    <Link to="/cart">cart page</Link>
+    <Link to='/create-order'>orders page</Link>
     <Link to='/admin'>admin page</Link>
     </Stack>
   </>

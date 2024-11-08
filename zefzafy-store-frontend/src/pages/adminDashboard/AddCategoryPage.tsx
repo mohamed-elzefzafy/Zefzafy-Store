@@ -82,6 +82,7 @@ const AddCategoryPage = () => {
         type="file"
         onChange={handleImageChange}
         fullWidth
+        InputLabelProps={{ shrink: true }}
         margin="normal"
       />
 

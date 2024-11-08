@@ -22,6 +22,38 @@ export interface IProduct {
   updatedAt: string;
 }
 
+export interface IGetUser {
+  users: IUserInfo[];
+  pagination: pagination;
+}
+
+export interface IUserInfo {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  profilePhoto: CloudinaryObject;
+  isAdmin: boolean;
+  wishList: IWishlist[];
+  createdAt?: string;
+  updatedAt?: string;
+  address?: string;
+  country?: string;
+  phoneNumber?: string;
+}
+
+export interface IUpdatUser {
+  firstName : string;
+  lastName : string;
+  email : string;
+  password : string
+  country : string,
+  address : string;
+  phoneNumber : string,
+  profilePhoto: CloudinaryObject;
+}
+
+
 export interface ICreateProduct {
   name: string;
   description: string;
@@ -39,7 +71,6 @@ export interface IUpdateCategory {
   name?: string;
   image?: CloudinaryObject[];
 }
-
 
 export interface IReviewsResult {
   _id: string;
@@ -70,6 +101,11 @@ export interface ICategory {
   updatedAt: string;
 }
 
+export interface IGetCategory {
+  categories: ICategory[];
+  pagination: pagination;
+}
+
 export interface IUserRegister {
   firstName: string;
   lastName: string;
@@ -82,58 +118,75 @@ export interface IUserLogin {
   password: string;
 }
 
-export interface IUserInfo {
+export interface ICart {
+  user: IUserInfo;
+  orderTotal: {
+    carItemsLength: number;
+    cartSubtotal: number;
+  };
+  cartItems: TCartItemsObj[];
   _id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  profilePhoto: CloudinaryObject;
-  isAdmin: boolean;
-  wishList: [];
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+export interface IOrder extends ICart {
+  paymentMethod: "Cash" | "Credit";
+  isPaid: boolean;
+  isDelivered: boolean;
 }
 
-export interface ICart {
-  
-    user: string;
-    orderTotal: {
-      carItemsLength: number;
-      cartSubtotal: number;
-    },
-    cartItems: TCartItemsObj[];
-    _id: string,
-    createdAt: string,
-    updatedAt: string,
-    __v: number
-  }
+export interface IGetOrder {
+  orders: IOrder[];
+  pagination: pagination;
+}
 
-  export type TCartItemsObj =  {
-    name: string,
-    productId: string,
-    price: number,
-    images: [
-      {
-        url: string,
-        public_id:string
-      },
-    ]
-    quantity: number,
-    count: number,
+export type TCartItemsObj = {
+  name: string;
+  productId: string;
+  price: number;
+  images: [
+    {
+      url: string;
+      public_id: string;
+    }
+  ];
+  quantity: number;
+  count: number;
+  _id: string;
+  removeItemFromCartHandler?: (productId: string) => void;
+};
+export type TCartItems = {
+  name: string;
+  productId: string;
+  price: number;
+  images: [
+    {
+      url: string;
+      public_id: string;
+    }
+  ];
+  quantity: number;
+  count: number;
+  _id: string;
+  removeItemFromCartHandler: (productId: string) => void;
+  refetchCartItems: () => void;
+};
+
+export interface IGetCounts {
+  productsCount: number;
+  categoriesCount: number;
+  usersCount: number;
+  ordersCount: number;
+}
+
+
+export interface IWishlist {
     _id: string,
-    removeItemFromCartHandler?: (productId : string) => void
-  }
-  export type TCartItems =  {
     name: string,
-    productId: string,
-    price: number,
-    images: [
-      {
-        url: string,
-        public_id:string
-      },
-    ]
-    quantity: number,
-    count: number,
-    _id: string,
-    removeItemFromCartHandler: (productId : string) => void
-    refetchCartItems : () => void,
-  }
+  images: CloudinaryObject[]
+    category: {
+        _id: string,
+        name: string
+    }
+}

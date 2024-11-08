@@ -7,6 +7,7 @@ import {
 } from "./../utils/cloudinary.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "./../utils/generateToken.js";
+import { paginationFunction } from "./productController.js";
 
 /**---------------------------------------
    * @desc    register user
@@ -43,7 +44,7 @@ export const register = asyncHandler(async (req, res, next) => {
     //  Change the profilePhoto field in the DB
     user.profilePhoto = {
       url: result.secure_url,
-      public_Id: result.public_id,
+      public_id: result.public_id,
     };
 
     await user.save();
@@ -77,15 +78,7 @@ export const login = asyncHandler(async (req, res, next) => {
   generateToken(res, user._id);
   res
     .status(201)
-    .json({
-      _id: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      profilePhoto: user.profilePhoto,
-      isAdmin : user.isAdmin,
-      wishList : user.wishList,
-    });
+    .json(user);
 });
 
 /**---------------------------------------
@@ -125,7 +118,7 @@ export const getUserProfile = asyncHandler(async (req, res) => {
  * @access  private 
  ----------------------------------------*/
 export const updateUserProfile = asyncHandler(async (req, res) => {
-  const { firstName ,lastName , email, password } = req.body;
+  const { firstName ,lastName , email, password , country ,address , phoneNumber} = req.body;
   const user = await UserModel.findById(req.user._id);
   if (!user) {
     return next(customErrorClass.create(`user not found`, 404));
@@ -135,6 +128,10 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
   user.lastName = lastName || user.lastName;
   user.email = email || user.email;
   user.password = password || user.password;
+  user.country = country || user.country;
+  user.address = address || user.address;
+  user.phoneNumber = phoneNumber || user.phoneNumber;
+
 
   if (req.file) {
     if (user.profilePhoto.public_id !== null) {
@@ -155,6 +152,7 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
   res.status(200).json(user);
 });
 
+
 /**---------------------------------------
  * @desc    update user profile
  * @route   /api/v1/users/profile
@@ -162,8 +160,10 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
  * @access  private 
  ----------------------------------------*/
 export const adminGetAllUsers = asyncHandler(async (req, res) => {
-  const users = await UserModel.find();
-  res.status(200).json(users);
+  const {pagination , pageSize , skip} = await paginationFunction(20 , req , UserModel );
+  const users = await UserModel.find().sort({"isAdmin" : "desc"}).limit(pageSize).skip(skip);
+  
+  res.status(200).json({users , pagination});
 });
 
 /**---------------------------------------
@@ -184,5 +184,5 @@ export const deleteUser = asyncHandler(async (req, res, next) => {
 
   await user.deleteOne();
 
-  res.status(200).json("user deleted succefully");
+  res.status(200).json("user deleted succesfully");
 });

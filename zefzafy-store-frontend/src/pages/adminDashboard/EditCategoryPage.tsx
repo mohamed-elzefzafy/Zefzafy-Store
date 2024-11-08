@@ -17,7 +17,7 @@ const EditCategoryPage = () => {
       setValue,
       formState: { errors },
     } = useForm<ICreateCategory>();
-  const {data : category} = useGetOneCategoryQuery(categorytId)
+  const {data : category , refetch} = useGetOneCategoryQuery(categorytId)
     const [updateCategory] = useUpdateCategoryMutation();
     const [image, setImage] = useState<File | null>(null);
     
@@ -45,8 +45,8 @@ const EditCategoryPage = () => {
       try {
         if (!categorytId) return;
         await updateCategory({data : formData , categorytId}).unwrap();
-        toast.success("category created successfully");
-        reset();
+        toast.success("category updated successfully");
+        refetch();
         setImage(null);
       } catch (error) {
         const errorMessage = (error as { data?: { message?: string } }).data?.message;

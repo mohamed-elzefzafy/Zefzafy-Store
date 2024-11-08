@@ -9,11 +9,10 @@ body {
 }
 
 a {
-  text-decoration: none;
+  text-decoration: none !important;
   color: inherit !important;
 }
 
 .red {
   border: 2px solid red !important;
-  height: fit-content;
 }

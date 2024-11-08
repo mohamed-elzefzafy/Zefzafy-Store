@@ -12,7 +12,10 @@ const initialState : IUserInfoObject ={
     email: "",
     profilePhoto: {url : "" , public_id : ""},
     isAdmin: false,
-    wishList: []
+    wishList: [],
+    address: "",
+    country: "",
+    phoneNumber: "",
   },
 };
 const authSlice = createSlice({
@@ -29,7 +32,11 @@ const authSlice = createSlice({
         email: "",
         profilePhoto: {url : "" , public_id : ""},
         isAdmin: false,
-        wishList: []};
+        wishList: [],
+        address: "",
+        country: "",
+        phoneNumber: "",
+      };
     },
   }
 })

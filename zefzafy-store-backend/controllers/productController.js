@@ -272,7 +272,7 @@ const sortAndSearchOptions = (req) => {
 
 
 
-const paginationFunction = async(PageSize , req , model , queryConditions) => {
+export const paginationFunction = async(PageSize , req , model , queryConditions) => {
   const pageSize = PageSize;
 const pageNumber = parseInt(req.query.page ? req.query.page.toString() : "1 ");
 const skip = (pageNumber - 1)  * pageSize;  
@@ -286,9 +286,6 @@ const  pagination =  {
 
     return {pagination , pageSize , skip}
 }
-
-
-
 
 
 

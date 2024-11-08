@@ -10,7 +10,7 @@ function App() {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Box sx={{ bgcolor: theme.palette.bg.main }}> {/* Use theme here */}
+        <Box sx={{ bgcolor: theme.palette.bg.main , minHeight : "100vh"}}> {/* Use theme here */}
           <Header />
           <Outlet />
         </Box>

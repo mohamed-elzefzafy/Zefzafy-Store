@@ -1,15 +1,42 @@
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import { Box, Button, IconButton, Stack, Typography, useMediaQuery } from "@mui/material";
+import { Box, Button, IconButton, Pagination, Stack, Typography, useMediaQuery } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
-import { useGetCategoriesQuery } from '../../redux/slices/categoryApiSlice';
+import { useDeleteCategoryMutation, useGetCategoriesForAdminQuery, useGetCategoriesQuery } from '../../redux/slices/categoryApiSlice';
+import swal from "sweetalert";
+import toast from "react-hot-toast";
+import { useState } from "react";
 
 const AdminCategoriesPage = () => {
-  const {data : categories} = useGetCategoriesQuery();
+  const [currentPage, setCurrentPage] = useState(1);
+  const {data , refetch} = useGetCategoriesForAdminQuery(currentPage.toString());
+  const [deleteCategory] = useDeleteCategoryMutation();
   const navigate = useNavigate();
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+console.log(data);
+
+  const deleteCategoryHandler = async(categoryId : string) => {
+    try {
+const willDelete = await swal({
+  title: "Are you sure?",
+  text: "Are you sure that you want to delete this Category?",
+  icon: "warning",
+  dangerMode: true,
+});
+ 
+if (willDelete) {
+  await deleteCategory({categoryId});
+  toast.success("category deleted successfully");
+  refetch();
+}
+
+
+    } catch (error) {
+      
+    }
+  }
 
   const columns: GridColDef[] = [
     {
@@ -50,7 +77,7 @@ const AdminCategoriesPage = () => {
       headerAlign: "center",
       renderCell: (params: GridRenderCellParams<string[]>) => (
         <>
-          <IconButton>
+          <IconButton onClick={() => deleteCategoryHandler(params.value)}>
             <Delete color="error" />
           </IconButton>
           <IconButton onClick={() => navigate(`/admin/editcategory/${params.value}`)}>
@@ -61,12 +88,18 @@ const AdminCategoriesPage = () => {
     },
   ];
 
-  const rows = categories?.map((category, index) => ({
+  const rows = data?.categories?.map((category, index) => ({
     id: index + 1,
     name: category.name,
     image: category.image.url,
     actions: category._id,
   })) || [];
+
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setCurrentPage(value);
+    refetch(); // Refetch products for the new page
+  };
+
 
   return (
     <Box sx={{ height: 600, width: isSmallScreen ? "100%" : "95%", mx: "auto", mt: 2 }}>
@@ -74,8 +107,14 @@ const AdminCategoriesPage = () => {
      <Typography variant={isSmallScreen ? "body2" : "body1"} sx={{ my: 1, ml: 1 }}>
      Categories :
       </Typography>
-      <Button  variant='contained' sx={{color : "white"}}
+      <Button  variant='contained' sx={{ textTransform : "capitalize"}}
        onClick={()=> navigate('/admin/addcategory')}>Add Category</Button>
+
+
+
+
+
+       
      </Stack>
       <DataGrid
         rows={rows}
@@ -86,6 +125,18 @@ const AdminCategoriesPage = () => {
           "& .MuiToolbar-root" : {display : "none"}
         }}
       />
+
+{data?.pagination?.pages && data?.pagination?.pages > 1 && 
+
+<Pagination
+count={data?.pagination?.pages} // Total number of pages from API
+page={currentPage}
+onChange={handlePageChange}
+color="primary"
+sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}
+/>
+} 
+
     </Box>
   );
 };

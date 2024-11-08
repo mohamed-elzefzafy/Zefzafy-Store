@@ -1,8 +1,10 @@
 import CartModel from '../models/cartModel.js';
 import OrderModel from '../models/orderModel.js';
 import ProductModel from '../models/productModel.js';
+import UserModel from '../models/userModel.js';
 import customErrorClass from '../utils/customErrorClass.js';
 import asyncHandler from './../middlewares/asyncHandler.js';
+import { paginationFunction } from './productController.js';
 
  /**---------------------------------------
  * @desc    create Order
@@ -66,6 +68,12 @@ let   orderTotalClone  = {
 
   })
 
+ const user = await UserModel.findById(req.user._id);
+if (!user.country || !user.address || !user.phoneNumber) {
+  return next(customErrorClass.create(`you must copmlete your shipping information first` , 400))
+}
+ 
+
   let ids2  = order.cartItems.map((item) => item.productId )
   let qty2 = order.cartItems.map((item) => Number(item.quantity) )
   
@@ -93,13 +101,14 @@ let   orderTotalClone  = {
  * @access  private  logged in user 
  ----------------------------------------*/
  export const getUserOrders = asyncHandler(async (req , res , next) => {
-  const orders = await OrderModel.find({user : req.user._id});
-  // .populate("user" , "-_id -email -profilePhoto -password -isAdmin -createdAt");
-
+  const {pagination , pageSize , skip} = await paginationFunction(20 , req , OrderModel );
+  const orders = await OrderModel.find({user : req.user._id}).populate("user" , "-password")
+  .sort({paymentMethod : "asc"}).limit(pageSize).skip(skip);
   if (!orders || orders.length === 0) {
     return next(customErrorClass.create(`There's no orders for this user`, 400));
   }
-  res.status(200).json(orders);
+ 
+  res.status(200).json({orders , pagination});
  });
  
 
@@ -133,9 +142,14 @@ let   orderTotalClone  = {
   {
     return  res.status(400).json("order not found")
   }
-  
-  order.isPaid = true;
-  order.paidAt =  Date.now();
+  if (order.isPaid) {
+    order.isPaid = false;
+    order.paidAt =  "";
+  } else {
+    order.isPaid = true;
+    order.paidAt =  Date.now();
+  }
+
     const updatedOrder =  await order.save();
   res.status(200).json(updatedOrder);
   
@@ -156,9 +170,17 @@ let   orderTotalClone  = {
   {
     return  res.status(400).json("order not found")
   }
+
+
+  if (order.isDelivered) {
+    order.isDelivered = false;
+    order.deliverdAt =  "";
+  } else {
+    order.isDelivered = true;
+    order.deliverdAt =  Date.now();
+  }
   
-  order.isDelivered = true;
-  order.deliverdAt =  Date.now();
+
     const updatedOrder =  await order.save();
   res.status(200).json(updatedOrder);
   
@@ -173,8 +195,9 @@ let   orderTotalClone  = {
    * @access  private  admin 
    ----------------------------------------*/
    export const getOrdersByAdmin = asyncHandler(async (req , res) => { 
-    const orders = await OrderModel.find({}).populate("user" , "-password").sort({paymentMethod : "asc"});
-    
-    res.status(200).json(orders);
+    const {pagination , pageSize , skip} = await paginationFunction(20 , req , OrderModel );
+    const orders = await OrderModel.find({}).populate("user" , "-password").sort({paymentMethod : "asc"})
+    .limit(pageSize).skip(skip);
+    res.status(200).json({orders , pagination});
     
      })
