@@ -23,6 +23,7 @@ import toast from 'react-hot-toast';
 import { logoutAction } from '../../redux/slices/authSlice';
 import { setCartItemLength } from '../../redux/slices/cartSlice';
 import { useGetUserCartQuery } from '../../redux/slices/cartApiSlice';
+import { useTranslation } from 'react-i18next';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -70,6 +71,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 
 const Header =  () => {
+  const {t , i18n} = useTranslation();
+  const [defaultLang, setDefaultLang] = useState<string>(localStorage.getItem('language') || "lang")
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -172,6 +175,23 @@ const [logout] = useLogoutMutation();
   }
 
 
+
+  const [anchorElLang, setAnchorElLang] = useState<null | HTMLElement>(null);
+  const openLang = Boolean(anchorElLang);
+  const handleClickLang = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElLang(event.currentTarget);
+  };
+  const handleCloseLang = () => {
+    setAnchorElLang(null);
+  };
+
+  const handleChangeLang = (lang : string) => {
+   i18n.changeLanguage(lang);
+   setDefaultLang(lang);
+   localStorage.setItem('language', lang);
+   handleCloseLang();
+  }
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{bgcolor : theme.palette.appbarColor?.main }}>
@@ -199,6 +219,43 @@ const [logout] = useLogoutMutation();
           <IconButton size="small" sx={{".MuiButtonBase-root" : {p:1 , width : "5px" , height : "5px"}}} >
               <ToggleDarkLightIcons fontSize='20px'/>
             </IconButton>
+
+
+
+
+{/* language  */}
+            <Box>
+      <Button
+        id="fade-button"
+        aria-controls={openLang ? 'fade-menu' : undefined}
+        aria-haspopup="true"
+        aria-expanded={openLang ? 'true' : undefined}
+        onClick={handleClickLang}
+        sx={{color : theme.palette.mode === 'light' ? "white" : theme.palette.primary}}
+      >
+        {defaultLang}
+      </Button>
+      <Menu
+        id="fade-menu"
+        MenuListProps={{
+          'aria-labelledby': 'fade-button',
+        }}
+        anchorEl={anchorElLang}
+        open={openLang}
+        onClose={handleCloseLang}
+        // TransitionComponent={Fade}
+      >
+        <MenuItem onClick={() => handleChangeLang("en")}>En</MenuItem>
+        <MenuItem onClick={() => handleChangeLang("ar")}>Ar</MenuItem>
+    
+      </Menu>
+    </Box>
+
+    {/* language  */}
+
+
+
+
 
               {userInfo.email && !userInfo.isAdmin   &&
               <IconButton  aria-label="cart" sx={{mr : {xs : 2 , md : 1}}}
@@ -233,7 +290,8 @@ const [logout] = useLogoutMutation();
                   navigate("/admin");
                 }}
               >
-                Admin-Dashboard
+                {/* Admin-Dashboard */}
+                {t("Admin-Dashboard")}
               </MenuItem>
             ) : (
               <MenuItem
@@ -245,7 +303,11 @@ const [logout] = useLogoutMutation();
                 User-Dashboard
               </MenuItem>
             )}
-            <MenuItem onClick={logoutHandler}>Logout</MenuItem>
+            <MenuItem onClick={logoutHandler}>
+            {/* Logout */}
+            {t("logout")}
+            
+            </MenuItem>
           </Menu>
           <Avatar alt={userInfo?.firstName} src={userInfo?.profilePhoto?.url} sx={{ml :1}}/>
         </>

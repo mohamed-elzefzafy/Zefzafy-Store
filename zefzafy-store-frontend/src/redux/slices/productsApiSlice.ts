@@ -2,12 +2,19 @@ import { EndpointBuilder } from "@reduxjs/toolkit/query";
 import { apiSlice } from "./apiSlice";
 import { ICreateProduct, IGetProduct, IProduct } from "../../types";
 
-
 export const productsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder: EndpointBuilder<any, any, any>) => ({
     getProducts: builder.query<IGetProduct, string | void>({
       query: (queries) => ({
         url: `/api/v1/products/get-products${queries}`,
+      }),
+      keepUnusedDataFor: 5,
+      providesTags: ["Product"],
+    }),
+
+    getTopProducts: builder.query<IProduct[], void>({
+      query: () => ({
+        url: `/api/v1/products/top-four-products`,
       }),
       keepUnusedDataFor: 5,
       providesTags: ["Product"],
@@ -19,10 +26,7 @@ export const productsApiSlice = apiSlice.injectEndpoints({
       }),
       keepUnusedDataFor: 5,
       providesTags: ["Product"],
-    
     }),
-
-    
 
     getOneProduct: builder.query<IProduct, string | void>({
       query: (productId) => ({
@@ -39,33 +43,40 @@ export const productsApiSlice = apiSlice.injectEndpoints({
       providesTags: ["Product"],
     }),
 
-    deleteProduct: builder.mutation< void , {productId : string}>({
-      query : (data) => ({
-        url : `/api/v1/products/delete-product/${data.productId}`,
-        method : "DELETE",
+    deleteProduct: builder.mutation<void, { productId: string }>({
+      query: (data) => ({
+        url: `/api/v1/products/delete-product/${data.productId}`,
+        method: "DELETE",
       }),
-
     }),
-    createProduct: builder.mutation< ICreateProduct , FormData>({
-      query : (data) => ({
-        url : `/api/v1/products/create-product`,
-        method : "POST",
-        body : data,
+    createProduct: builder.mutation<ICreateProduct, FormData>({
+      query: (data) => ({
+        url: `/api/v1/products/create-product`,
+        method: "POST",
+        body: data,
       }),
-
     }),
 
-    updateProduct: builder.mutation<ICreateProduct, { productId: string; data: FormData }>({
+    updateProduct: builder.mutation<
+      ICreateProduct,
+      { productId: string; data: FormData }
+    >({
       query: ({ productId, data }) => ({
-        url: `/api/v1/products/update-product/${productId}`,  // Use productId here
+        url: `/api/v1/products/update-product/${productId}`, // Use productId here
         method: "PUT",
-        body: data,  // The form data
+        body: data, // The form data
       }),
     }),
-
-    }),
-
+  }),
 });
 
-export const { useGetProductsQuery , useGetOneProductQuery , useGetProductsCategoryQuery ,
-   useGetProductsForAdminQuery , useDeleteProductMutation , useCreateProductMutation , useUpdateProductMutation} = productsApiSlice;
+export const {
+  useGetProductsQuery,
+  useGetOneProductQuery,
+  useGetProductsCategoryQuery,
+  useGetProductsForAdminQuery,
+  useDeleteProductMutation,
+  useCreateProductMutation,
+  useUpdateProductMutation,
+  useGetTopProductsQuery,
+} = productsApiSlice;

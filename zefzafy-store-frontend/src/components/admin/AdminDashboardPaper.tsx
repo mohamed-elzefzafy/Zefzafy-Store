@@ -1,7 +1,7 @@
 import { Paper, Typography, Grid, Box, Link } from '@mui/material';
 import PeopleIcon from '@mui/icons-material/People';
 import CategoryIcon from '@mui/icons-material/Category';
-import { Receipt, TabletMac } from '@mui/icons-material';
+import { PermMedia, Receipt, TabletMac } from '@mui/icons-material';
 import { useGetAllCountsQuery } from '../../redux/slices/utilsApiSlice';
 
 
@@ -34,6 +34,12 @@ const AdminDashboardPaper = () => {
             value: counts?.ordersCount,
             icon: <Receipt fontSize="large" color="primary" />, 
             path : "/admin/orders"
+          },
+          {
+            label: 'Banners Sliders',
+            value: counts?.bannersCount,
+            icon: <PermMedia fontSize="large" color="primary" />,  
+            path : "/admin/banners"
           },
       ];
 

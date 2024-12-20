@@ -5,7 +5,14 @@ import { useAppSelector } from "../../redux/hooks";
 const PrivateRoute = () => {
   const {userInfo} = useAppSelector(state => state.auth);
 
-  return userInfo && !userInfo.isAdmin ? <Outlet/> : <Navigate to="/login" replace/> 
+if (!userInfo.email ) {
+  return <Navigate to="/login" replace/> 
+ 
+} else if (userInfo.isAdmin === true) {
+  return  <Navigate to="/" replace/> 
+} else {
+  return <Outlet/> 
+}
   
 }
 

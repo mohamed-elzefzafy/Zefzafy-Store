@@ -11,6 +11,7 @@ import store, { persistor } from './redux/store.ts';
 import router from './Routes.tsx';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Toaster } from 'react-hot-toast';
+import './components/i18Language/i18n.ts';
 
 
 

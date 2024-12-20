@@ -25,6 +25,10 @@ import WishlistPage from "./pages/userDashboard/WishlistPage";
 import UserOrdersPage from "./pages/userDashboard/UserOrdersPage";
 import AdminRoute from "./components/protectedRoutesComp/AdminRoute";
 import PrivateRoute from "./components/protectedRoutesComp/PrivateRoute";
+import LoggedUserRoute from "./components/protectedRoutesComp/LoggedUserRoute";
+import AdminBannersPage from "./pages/adminDashboard/AdminBannersPage";
+import EditBannerPage from "./pages/adminDashboard/EditBannerPage";
+import AddBannerPage from "./pages/adminDashboard/AddBannerPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -37,8 +41,10 @@ const router = createBrowserRouter(
   <Route path='/create-order' element={<CreateOrderPage/>}/>
   <Route path='/orders/:orderid' element={<OrderDetailsUserPage/>}/>
 
-  <Route path='/register' element={<RegisterPage/>}/>
-  <Route path='/login' element={<LoginPage/>}/>
+<Route path="" element={<LoggedUserRoute/>}>
+<Route path='/register' element={<RegisterPage/>}/>
+<Route path='/login' element={<LoginPage/>}/>
+</Route>
 
   <Route path="" element={<AdminRoute/>}>
   <Route path="/admin" element={<AdminLayout/>}>
@@ -53,6 +59,9 @@ const router = createBrowserRouter(
   <Route path='editcategory/:categorytId' element={<EditCategoryPage/>}/>
   <Route path='users' element={<AdminUsersPage/>}/>
   <Route path='orders' element={<AdminOrdersPage/>}/>
+  <Route path='banners' element={<AdminBannersPage/>}/>
+  <Route path='addbanner' element={<AddBannerPage/>}/>
+  <Route path='editbanner/:bannerId' element={<EditBannerPage/>}/>
   </Route>
   </Route>
 
