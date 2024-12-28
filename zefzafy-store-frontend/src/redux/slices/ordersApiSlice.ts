@@ -48,34 +48,6 @@ const orderApiSlice = apiSlice.injectEndpoints({
       keepUnusedDataFor: 5,
       providesTags: ["Order"],
     }),
-
-
-    //   payOrder : builder.mutation({
-    //     query : ({id , details}) => ({
-    //       url : `/api/v1/orders/${id}/pay`,
-    //       method : "PUT",
-    //       body : details
-    //     }),
-    //     keepUnusedDataFor : 5
-    //     }),
-    //     getPayPalClientId : builder.query({
-    //       query : () => ({
-    //         url : "/api/config/paypal",
-    //       }),
-    //       keepUnusedDataFor : 5
-    //     }),
-    //     getMyOrders : builder.query({
-    //       query : () => ({
-    //         url : "/api/v1/orders/myorders",
-    //       }),
-    //       keepUnusedDataFor : 5
-    //     }),
-    //     getOrders : builder.query({
-    //       query : () => ({
-    //         url : "/api/v1/orders",
-    //       }),
-    //       keepUnusedDataFor : 5
-    //     }),
   }),
 });
 

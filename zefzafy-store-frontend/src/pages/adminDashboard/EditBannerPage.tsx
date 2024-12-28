@@ -1,7 +1,6 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { ICreateBanner, ICreateCategory, IUpdateCategory } from "../../types";
-import {  useUpdateCategoryMutation } from "../../redux/slices/categoryApiSlice";
+import { ICreateBanner } from "../../types";
 import { useForm } from "react-hook-form";
 import { Box, Button, TextField, Typography, useTheme } from "@mui/material";
 import { useParams } from "react-router-dom";
@@ -16,7 +15,6 @@ const EditBannerPage = () => {
     const {
       register,
       handleSubmit,
-      reset,
       setValue,
       formState: { errors },
     } = useForm<ICreateBanner>();

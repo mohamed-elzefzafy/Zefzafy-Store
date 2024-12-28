@@ -78,7 +78,9 @@ const DrawerComponent = ({drawerOptions} : CustomDrawerProps) => {
       sx={{
         "& .MuiDrawer-paper": {
           height: "calc(100vh - 66px)",
-          position: "relative",
+          position: "fixed",
+          top : "64px",
+          zIndex : "1000",
         },
       }}
     >

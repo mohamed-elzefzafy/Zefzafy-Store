@@ -1,12 +1,13 @@
 import express from  "express";
 import photoUpload from "../middlewares/photoUploadMiddleWare.js";
 import { createCategoryValidation, updateCategoryValidation } from "../validation/categoryValidation.js";
-import { createCategory, deleteCategory, getAllCategories, getAllCategoriesForAdmin , getOneCategory, updateCategory } from "../controllers/categoryController.js";
+import { createCategory, deleteCategory, getAllCategories, getAllCategoriesForAdmin , getOneCategory, getTopFourCategories, updateCategory } from "../controllers/categoryController.js";
 import { verifyIsAdmin, verifyIsLoggedIn } from "../middlewares/authMiddleware.js";
 const categoryRouter = express.Router();
 
 categoryRouter.route("/").get(getAllCategories);
 categoryRouter.route("/get-one-category/:id").get(getOneCategory);
+categoryRouter.route("/top-four-categories").get(getTopFourCategories);
 categoryRouter.use(verifyIsLoggedIn);
 categoryRouter.use(verifyIsAdmin);
 categoryRouter.route("/admin").get(getAllCategoriesForAdmin);

@@ -1,11 +1,8 @@
 import { useState } from 'react';
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import { Box, Button, IconButton, Pagination, Stack, Typography, useMediaQuery } from "@mui/material";
-import { Delete } from "@mui/icons-material";
+import { Box, Button, Pagination, Stack, Typography, useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useDeleteUserMutation } from '../../redux/slices/usersApiSlice';
-import toast from 'react-hot-toast';
-import { red } from '@mui/material/colors';
 import { useGetOrdersByAdminQuery } from '../../redux/slices/ordersApiSlice';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,7 +10,6 @@ import { useNavigate } from 'react-router-dom';
 const AdminOrdersPage = () => {
  const [currentPage, setCurrentPage] = useState(1);
  const {data , refetch} = useGetOrdersByAdminQuery(currentPage.toString());
- const [deleteUser] = useDeleteUserMutation();
  const navigate = useNavigate();
  console.log(data?.orders);
  

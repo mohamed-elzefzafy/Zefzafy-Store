@@ -1,19 +1,14 @@
 import { useState } from 'react';
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import { Box, Button, IconButton, Pagination, Stack, Typography, useMediaQuery } from "@mui/material";
-import { Delete } from "@mui/icons-material";
+import { Box, Button, Pagination, Stack, Typography, useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { useDeleteUserMutation } from '../../redux/slices/usersApiSlice';
-import toast from 'react-hot-toast';
-import { red } from '@mui/material/colors';
-import { useGetOrdersByAdminQuery, useGetOrdersByLoggedUserQuery } from '../../redux/slices/ordersApiSlice';
+import { useGetOrdersByLoggedUserQuery } from '../../redux/slices/ordersApiSlice';
 import { useNavigate } from 'react-router-dom';
 
 
 const UserOrdersPage = () => {
  const [currentPage, setCurrentPage] = useState(1);
  const {data , refetch} = useGetOrdersByLoggedUserQuery();
- const [deleteUser] = useDeleteUserMutation();
  const navigate = useNavigate();
  console.log(data?.orders);
  
@@ -39,7 +34,7 @@ const UserOrdersPage = () => {
       align: "center",
       headerAlign: "center",
       renderCell: (params: GridRenderCellParams<any>) => (
-        <Typography sx={{fontSize : {xs : "12px" , md : "13px"} , mt : 2}}> {/* Custom font size */}
+        <Typography sx={{fontSize : {xs : "12px" , md : "13px"} , mt : 2}}> 
           {params.value}
         </Typography>
       ),
@@ -52,7 +47,7 @@ const UserOrdersPage = () => {
       align: "center",
       headerAlign: "center",
       renderCell: (params: GridRenderCellParams<any>) => (
-        <Typography sx={{fontSize : {xs : "12px" , md : "13px"} , mt : 2}}> {/* Custom font size */}
+        <Typography sx={{fontSize : {xs : "12px" , md : "13px"} , mt : 2}}> 
           {params.value}
         </Typography>
       ),
@@ -72,13 +67,6 @@ const UserOrdersPage = () => {
       align: "center",
       headerAlign: "center",
       
-      // renderCell: (params: GridRenderCellParams<any>) => (
-      //   <img
-      //     src={params.value}
-      //     alt="userProfile"
-      //     style={{ width: "40px", height: "40px", objectFit: "cover", borderRadius: "50%" }}
-      //   />
-      // ),
     },
     {
       field: "Deliverd",
@@ -111,29 +99,9 @@ const UserOrdersPage = () => {
     actions: order._id,
   })) || [];
 
-  // const handleDeleteUser = async (userId: string) => {
-  //   try {
-  //     const willDelete = await swal({
-  //       title: "Are you sure?",
-  //       text: "Are you sure that you want to delete this user?",
-  //       icon: "warning",
-  //       dangerMode: true,
-  //     });
-       
-  //     if (willDelete) {
-  //       await deleteUser({ userId }).unwrap();
-  //       toast.success("user deleted successfully");
-  //       refetch();
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
-  // Handle page change
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setCurrentPage(value);
-    refetch(); // Refetch products for the new page
+    refetch();
   };
 
   return (
@@ -156,7 +124,7 @@ const UserOrdersPage = () => {
  {data?.pagination.pages && data?.pagination.pages > 1 && 
 
 <Pagination
-count={data?.pagination.pages} // Total number of pages from API
+count={data?.pagination.pages} 
 page={currentPage}
 onChange={handlePageChange}
 color="primary"

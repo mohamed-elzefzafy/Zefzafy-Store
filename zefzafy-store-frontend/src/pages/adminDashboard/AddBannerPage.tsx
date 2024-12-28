@@ -1,9 +1,8 @@
 import { Box, Button, TextField, Typography, useTheme } from "@mui/material";
 import { useState, ChangeEvent } from "react";
 import { useForm } from "react-hook-form";
-import { ICreateBanner, ICreateCategory } from "../../types";
+import { ICreateBanner } from "../../types";
 import toast from "react-hot-toast";
-import { useCreateCategoryMutation } from "../../redux/slices/categoryApiSlice";
 import { useCreateBannerMutation } from "../../redux/slices/bannersApiSlice";
 
 const AddBannerPage = () => {
@@ -72,7 +71,6 @@ const AddBannerPage = () => {
         label="discount"
         {...register("discount")}
         error={!!errors.discount}
-        // helperText={errors.text && "text is required"}
         fullWidth
         margin="normal"
         type="number"

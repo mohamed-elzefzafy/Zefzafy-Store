@@ -2,26 +2,29 @@ import { Outlet } from "react-router-dom";
 import { Box } from "@mui/material";
 import { AccountBox,Receipt, Shop2 } from "@mui/icons-material";
 import DrawerComponent from "../../components/DrawerComponent";
+import { useTranslation } from "react-i18next";
 
 
-const AdminDashboardArrayList = [
-{
-    text: "profile",
-    icon: <AccountBox />,
-    path: "/user",
-  },
-{
-    text: "Wish List",
-    icon: <Shop2 />,
-    path: "/user/wishlist",
-  },
-{
-    text: "User Orders",
-    icon: <Receipt />,
-    path: "/user/orders",
-  },
-];
 const UserLayout = () => {
+  const {t , i18n} = useTranslation();
+
+  const AdminDashboardArrayList = [
+    {
+        text: t("profile"),
+        icon: <AccountBox />,
+        path: "/user",
+      },
+    {
+        text: t("WishList"),
+        icon: <Shop2 />,
+        path: "/user/wishlist",
+      },
+    {
+        text: t("UserOrders"),
+        icon: <Receipt />,
+        path: "/user/orders",
+      },
+    ];
   return (
     <Box>
       <Box

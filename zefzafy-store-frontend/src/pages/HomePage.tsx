@@ -5,9 +5,11 @@ import { useGetTopProductsQuery } from "../redux/slices/productsApiSlice";
 import { useGetTopCategoriesQuery } from "../redux/slices/categoryApiSlice";
 import CategoryCard from "../components/categories/CategoryCard";
 import ProductCard from "../components/products/ProductCard";
+import { useTranslation } from "react-i18next";
 
 const HomePage = () => {
   const navigate = useNavigate()
+  const {t , i18n} = useTranslation();
   const { data: Categories } = useGetTopCategoriesQuery();
   const { data: products } = useGetTopProductsQuery();
 
@@ -17,7 +19,7 @@ const HomePage = () => {
 
       <Box sx={{ my: 5, mx: 20 }}>
         <Typography sx={{ mb: 3, ml: 4, fontSize: "24px" }}>
-          Categories :
+          {t("Categories")} 
         </Typography>
 
         <Stack
@@ -43,13 +45,13 @@ const HomePage = () => {
             textTransform: "capitalize",
           }}
         >
-          More Categories
+         {t("MoreCategories")}
         </Button>
       </Box>
 
       <Box sx={{ my: 10, mx: 20 }}>
         <Typography sx={{ mb: 3, ml: 4, fontSize: "24px" }}>
-          Products :
+          {t("Products")} 
         </Typography>
 
         <Stack
@@ -75,7 +77,7 @@ const HomePage = () => {
             textTransform: "capitalize",
           }}
         >
-          More Products
+          {t("MoreProducts")}
         </Button>
       </Box>
 

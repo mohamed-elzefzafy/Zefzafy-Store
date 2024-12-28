@@ -45,7 +45,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       query: ({data }) => ({
         url: `/api/v1/users/update-user`,  
         method: "PUT",
-        body: data,  // The form data
+        body: data,  
       }),
     }),
 

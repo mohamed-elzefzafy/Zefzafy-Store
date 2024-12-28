@@ -201,7 +201,18 @@ res.status(200).json(products);
 
 
 
+           /**---------------------------------------
+   * @desc    getFourProducts
+   * @route   /api/v1/products/top-four-products
+   * @method  POST
+   * @access  private -- admin 
+   ----------------------------------------*/
+   export const getTopFourProducts = asyncHandler(async (req , res , next) => {
+    const products = await ProductModel.find().sort({"sales" : "desc"}).limit(4);
 
+  res.status(200).json(products);
+
+   });
 
 
 

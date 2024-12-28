@@ -177,3 +177,12 @@ cart.orderTotal.cartSubtotal = 0;
   await cart.save();
   res.status(200).json(cart);
  })
+
+
+
+
+
+
+
+
+

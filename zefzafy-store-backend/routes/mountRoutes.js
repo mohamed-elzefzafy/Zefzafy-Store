@@ -1,3 +1,4 @@
+import bannersRouter from "./bannersRoute.js";
 import cartRouter from "./cartRoute.js";
 import categoryRouter from "./categoryRoute.js";
 import orderRouter from "./orderRoute.js";
@@ -17,6 +18,7 @@ const mountRoutes = (app) => {
   app.use("/api/v1/cart" , cartRouter);
   app.use("/api/v1/orders" , orderRouter);
   app.use("/api/v1/utils" , utilsRouter);
+  app.use("/api/v1/banners" , bannersRouter);
 }
 
 

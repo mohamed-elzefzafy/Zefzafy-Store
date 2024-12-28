@@ -62,9 +62,9 @@ export const productsApiSlice = apiSlice.injectEndpoints({
       { productId: string; data: FormData }
     >({
       query: ({ productId, data }) => ({
-        url: `/api/v1/products/update-product/${productId}`, // Use productId here
+        url: `/api/v1/products/update-product/${productId}`, 
         method: "PUT",
-        body: data, // The form data
+        body: data, 
       }),
     }),
   }),

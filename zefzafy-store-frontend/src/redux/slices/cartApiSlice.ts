@@ -1,6 +1,6 @@
 import { EndpointBuilder } from "@reduxjs/toolkit/query";
 import { apiSlice } from "./apiSlice";
-import { ICart, IProduct } from "../../types";
+import { ICart } from "../../types";
 
 export interface IAddToCart {
   quantity : number;
@@ -15,7 +15,7 @@ export const cartApiSlice = apiSlice.injectEndpoints({
         method : "POST",
         body : data,
       }),
-      // invalidatesTags : ["Reviews"]
+  
     }),
     getUserCart: builder.query<ICart, string | void>({
       query: () => ({
@@ -33,30 +33,6 @@ export const cartApiSlice = apiSlice.injectEndpoints({
 
     }),
 
-
-
-    // updateReview : builder.mutation<IProduct, IReiews>({
-    //   query : (data) => ({
-    //     url : `/api/v1/reviews/update-review/${data.productId}?reviewId=${data.reviewId}`,
-    //     method : "PUT",
-    //     body : data,
-    //   }), 
-    //   invalidatesTags : ["Reviews"]
-    // }),
-    // deleteReview : builder.mutation({
-    //   query : (data) => ({
-    //     url : `/api/v1/reviews/remove-review/${data.productId}?reviewId=${data.reviewId}`,
-    //     method : "PUT",
-    //   }),
-    //   invalidatesTags : ["Reviews"]
-    // }),
-    // deleteReviewByAdmin : builder.mutation({
-    //   query : (data) => ({
-    //     url : `/api/v1/reviews/admin-remove-review/${data.productId}?reviewId=${data.reviewId}`,
-    //     method : "PUT",
-    //   }),
-    //   invalidatesTags : ["Reviews"]
-    // }),
   })
 })
 

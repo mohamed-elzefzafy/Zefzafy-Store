@@ -18,7 +18,6 @@ export const reviewsApiSlice = apiSlice.injectEndpoints({
         method : "PUT",
         body : data,
       }),
-      // invalidatesTags : ["Reviews"]
     }),
     updateReview : builder.mutation<IProduct, IReiews>({
       query : (data) => ({

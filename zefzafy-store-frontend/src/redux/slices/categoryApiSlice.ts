@@ -4,10 +4,8 @@ import {
   ICategory,
   ICreateCategory,
   IGetCategory,
-  IUpdateCategory,
 } from "../../types";
 
-interface IGetProduct {}
 
 export const categoriesApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder: EndpointBuilder<any, any, any>) => ({

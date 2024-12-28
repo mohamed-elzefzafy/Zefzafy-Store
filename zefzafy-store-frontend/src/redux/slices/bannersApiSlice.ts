@@ -1,6 +1,6 @@
 import { EndpointBuilder } from "@reduxjs/toolkit/query";
 import { apiSlice } from "./apiSlice";
-import { IBannersResult, IProduct } from "../../types";
+import { IBannersResult } from "../../types";
 
 export interface IBanners{
 

@@ -19,7 +19,7 @@ import {
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { useGetOneProductQuery, useGetProductsCategoryQuery } from "../redux/slices/productsApiSlice";
-import { ChangeEvent, SetStateAction, useState } from "react";
+import { SetStateAction, useState } from "react";
 import { BorderColor, Delete, DeleteForever } from "@mui/icons-material";
 import { useCreateReviewMutation, useDeleteReviewByAdminMutation, useDeleteReviewMutation, useUpdateReviewMutation } from "../redux/slices/reviewsApiSlice";
 import toast from "react-hot-toast";
@@ -138,9 +138,10 @@ const deleteReviewHandler = async(reviewId : string) => {
 
     try {
     
-     await deleteReview({productId : ProductID , reviewId : reviewId}).unwrap();
+     await deleteReview({productId : ProductID , reviewId : reviewId});
+     refetch();
       toast.success("Review deleted successfully");
-         refetch();
+       
     }  catch (error) {
       const errorMessage = (error as { data?: { message?: string } }).data?.message;
       toast.error(errorMessage as string);
@@ -329,7 +330,7 @@ console.log(quantity);
         </Typography>
         <Divider />
 
-        {product?.reviews.map((review) => (
+        {product?.reviews.map(review => 
           <Stack mt={2} key={review._id}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap">
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -337,7 +338,7 @@ console.log(quantity);
                 <Typography variant="body1">{review.userName}</Typography>
               </Box>
               <Box>
-                <Rating name="read-only" value={review.rating} readOnly size="small" sx={{ mt: 1 }} precision={0.5} />
+                <Rating name="read-only" value={review?.rating} readOnly size="small" sx={{ mt: 1 }} precision={0.5} />
               </Box>
             </Stack>
 
@@ -372,7 +373,7 @@ console.log(quantity);
        
     
           </Stack>
-        ))}
+        )}
 
     
     { userInfo?.email && !userInfo?.isAdmin  &&

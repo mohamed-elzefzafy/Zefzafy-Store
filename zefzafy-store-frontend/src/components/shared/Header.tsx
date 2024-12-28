@@ -9,8 +9,6 @@ import Badge, { BadgeProps } from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
-import MailIcon from '@mui/icons-material/Mail';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import { ChangeEvent, useEffect, useState } from 'react';
 import ToggleDarkLightIcons from '../../muiTheme/ToggleDarkLightIcons';
 import { Link, useNavigate } from 'react-router-dom';
@@ -55,7 +53,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: 'inherit',
   '& .MuiInputBase-input': {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(2)})`,
     transition: theme.transitions.create('width'),
     width: '100%',
@@ -76,69 +73,19 @@ const Header =  () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
-  const [mode, setMode] =  useState(localStorage.getItem("mode") || "light");
   const {userInfo} = useAppSelector(state => state.auth);
   const { data: userCartItems } = useGetUserCartQuery();
-  const {cartItemLength} = useAppSelector(state => state.cart)
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
-     useState<null | HTMLElement>(null);
+  const {cartItemLength} = useAppSelector(state => state.cart);
 
      useEffect(()=>{   
       dispatch(setCartItemLength(userCartItems?.cartItems?.length))
        },[userCartItems])
 
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
 const [logout] = useLogoutMutation();
 
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
-  };
 
 
-
-  const menuId = 'primary-search-account-menu';
-
-  const mobileMenuId = 'primary-search-account-menu-mobile';
-  const renderMobileMenu = (
-    <Menu
-      anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      id={mobileMenuId}
-      keepMounted
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      open={isMobileMenuOpen}
-      onClose={handleMobileMenuClose}
-    >
-      <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="error">
-            <MailIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem>
-      <MenuItem>
-        <IconButton
-          size="large"
-          aria-label="show 17 new notifications"
-          color="inherit"
-        >
-          <Badge badgeContent={17} color="error">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
-    </Menu>
-  );
-;
   const StyledBadge = styled(Badge)<BadgeProps>(() => ({
     '& .MuiBadge-badge': {
       top: "4px",
@@ -193,8 +140,8 @@ const [logout] = useLogoutMutation();
   }
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{bgcolor : theme.palette.appbarColor?.main }}>
+    <Box sx={{ flexGrow: 1 , mb : "64px"}}>
+      <AppBar position="fixed" sx={{bgcolor : theme.palette.appbarColor?.main }}>
         <Toolbar>
           <Typography
             variant="h6"
@@ -220,10 +167,6 @@ const [logout] = useLogoutMutation();
               <ToggleDarkLightIcons fontSize='20px'/>
             </IconButton>
 
-
-
-
-{/* language  */}
             <Box>
       <Button
         id="fade-button"
@@ -231,7 +174,7 @@ const [logout] = useLogoutMutation();
         aria-haspopup="true"
         aria-expanded={openLang ? 'true' : undefined}
         onClick={handleClickLang}
-        sx={{color : theme.palette.mode === 'light' ? "white" : theme.palette.primary}}
+        sx={{color : theme.palette.mode === 'light' ? "white" : theme.palette.primary.main}}
       >
         {defaultLang}
       </Button>
@@ -243,19 +186,12 @@ const [logout] = useLogoutMutation();
         anchorEl={anchorElLang}
         open={openLang}
         onClose={handleCloseLang}
-        // TransitionComponent={Fade}
       >
         <MenuItem onClick={() => handleChangeLang("en")}>En</MenuItem>
         <MenuItem onClick={() => handleChangeLang("ar")}>Ar</MenuItem>
     
       </Menu>
     </Box>
-
-    {/* language  */}
-
-
-
-
 
               {userInfo.email && !userInfo.isAdmin   &&
               <IconButton  aria-label="cart" sx={{mr : {xs : 2 , md : 1}}}
@@ -291,7 +227,7 @@ const [logout] = useLogoutMutation();
                 }}
               >
                 {/* Admin-Dashboard */}
-                {t("Admin-Dashboard")}
+                {t("AdminDashboard")}
               </MenuItem>
             ) : (
               <MenuItem
@@ -300,11 +236,10 @@ const [logout] = useLogoutMutation();
                   navigate("/user");
                 }}
               >
-                User-Dashboard
+              {t("UserDashboard")}
               </MenuItem>
             )}
             <MenuItem onClick={logoutHandler}>
-            {/* Logout */}
             {t("logout")}
             
             </MenuItem>

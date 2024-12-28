@@ -21,8 +21,10 @@ import { useAppSelector } from "../redux/hooks";
 import { useDispatch } from "react-redux";
 import { clearSearchKeywordAction } from "../redux/slices/searchSlice";
 import PaginationComponent from "../components/products/PaginationComponent";
+import { useTranslation } from "react-i18next";
 
 const ProductsPage = () => {
+  const {t , i18n} = useTranslation();
   const location = useLocation();
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -66,6 +68,7 @@ const ProductsPage = () => {
   };
 
   const handlePageChange = (
+  
     e: ChangeEvent<unknown>,
     page: number
   ) => {
@@ -193,7 +196,7 @@ const ProductsPage = () => {
       {/* end filters  */}
 
       <Typography variant="h5" sx={{ mb: 2 }}>
-        Products :{" "}
+      {t("Products")}  {" "}
       </Typography>
       <Stack
         sx={{

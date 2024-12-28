@@ -6,14 +6,13 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { blue } from "@mui/material/colors";
 import { useGetBannersQuery } from "../../../redux/slices/bannersApiSlice";
+import { useTranslation } from "react-i18next";
 
 
-// const mySlider = [
-//   { text: "MEN"  , discount : "30" , image: "./images/banner-15.jpg" },
-//   { text: "WOMEN"  , discount : "20" , image: "./images/banner-25.jpg" },
-// ];
 
 const SwipperComponent = () => {
+  const {t , i18n} = useTranslation();
+
   const {data : mySlider , refetch} = useGetBannersQuery();
   return (
     <Swiper
@@ -82,7 +81,7 @@ const SwipperComponent = () => {
                     }}
                     variant="contained"
                   >
-                    shop now
+                   {t("shopNow")}
                   </Button>
 </Stack>
     </Box>

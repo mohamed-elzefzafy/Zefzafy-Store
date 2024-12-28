@@ -1,4 +1,5 @@
 import CartModel from '../models/cartModel.js';
+import CategoryModel from '../models/categoryModel.js';
 import OrderModel from '../models/orderModel.js';
 import ProductModel from '../models/productModel.js';
 import UserModel from '../models/userModel.js';
@@ -42,6 +43,22 @@ import { paginationFunction } from './productController.js';
     
     })
   });
+
+
+
+
+  await ProductModel.find({_id :{$in : ids}}).then((products) => {
+    products.forEach(async(product , index) =>
+     { 
+
+    let cat = await CategoryModel.findById(product.category._id);
+  cat.sales = cat.sales + qty[index];
+  await cat.save();
+    
+    })
+  });
+
+
 
   newCartItems = newCartItems.filter(item => item.count !== 0);
   if (newCartItems.length === 0) {

@@ -107,7 +107,7 @@ res.status(201).json(category);
 
    
          /**---------------------------------------
-   * @desc    delete Category
+   * @desc    get Category
    * @route   /api/v1/categories
    * @method  POST
    * @access  private -- admin 
@@ -162,3 +162,16 @@ res.status(201).json(category);
   });
   
 
+
+           /**---------------------------------------
+   * @desc    getFourTopCategories
+   * @route   /api/v1/categories/top-four-categories
+   * @method  POST
+   * @access  private -- admin 
+   ----------------------------------------*/
+   export const getTopFourCategories = asyncHandler(async (req , res , next) => {
+    const categories = await CategoryModel.find().sort({"sales" : "desc"}).limit(6);
+
+  res.status(200).json(categories);
+
+   });
