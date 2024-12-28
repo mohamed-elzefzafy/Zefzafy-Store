@@ -21,13 +21,13 @@ app.use(
   cors({
     credentials: true,
     // origin: process.env.FRONT_URL,
-    origin: 'https://zefzafy-store.web.app/'
+    origin: 'https://zefzafy-store.firebaseapp.com'
     // origin: 'https://zef-proshop.web.app'
   })
 );
 
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin',  "https://zefzafy-store.web.app/",);
+  res.setHeader('Access-Control-Allow-Origin',  "https://zefzafy-store.firebaseapp.com",);
   // res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
   // res.setHeader('Access-Control-Allow-Origin', 'https://zef-proshop.web.app');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
