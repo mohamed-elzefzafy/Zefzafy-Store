@@ -20,14 +20,14 @@ connectDb();
 app.use(
   cors({
     credentials: true,
-    origin: process.env.FRONT_URL,
-    // origin: 'http://localhost:3000'
+    // origin: process.env.FRONT_URL,
+    origin: 'https://zefzafy-store.web.app/'
     // origin: 'https://zef-proshop.web.app'
   })
 );
 
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin',  process.env.FRONT_URL,);
+  res.setHeader('Access-Control-Allow-Origin',  "https://zefzafy-store.web.app/",);
   // res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
   // res.setHeader('Access-Control-Allow-Origin', 'https://zef-proshop.web.app');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
