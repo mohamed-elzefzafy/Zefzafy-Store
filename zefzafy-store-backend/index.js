@@ -17,14 +17,25 @@ app.use(cookieParser());
 connectDb();
 
 
+// app.use(
+//   cors({
+//     credentials: true,
+//     // origin: process.env.FRONT_URL,
+//     origin: 'https://zefzafy-store.firebaseapp.com'
+//     // origin: 'https://zef-proshop.web.app'
+//   })
+// );
+
+
 app.use(
   cors({
     credentials: true,
-    // origin: process.env.FRONT_URL,
-    origin: 'https://zefzafy-store.firebaseapp.com'
-    // origin: 'https://zef-proshop.web.app'
+    origin: process.env.FRONT_URL || 'https://zefzafy-store.firebaseapp.com',
   })
 );
+
+
+
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin',  "https://zefzafy-store.firebaseapp.com",);
