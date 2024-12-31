@@ -27,13 +27,22 @@ connectDb();
 // );
 
 
-app.use(
-  cors({
-    credentials: true,
-    origin: process.env.FRONT_URL || 'https://zefzafy-store.web.app',
-  })
-);
+// app.use(
+//   cors({
+//     credentials: true,
+//     origin: process.env.FRONT_URL || 'https://zefzafy-store.web.app',
+//   })
+// );
 
+
+const corsOptions = {
+  origin: 'https://zefzafy-store.web.app',
+  credentials: true, // Allow cookies to be sent with requests
+};
+
+app.use(cors(corsOptions));
+
+app.options('*', cors(corsOptions)); 
 
 
 
